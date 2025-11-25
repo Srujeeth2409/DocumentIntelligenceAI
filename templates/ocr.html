@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Text Extraction - Document Intelligence AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+            background: #f5f7fa;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #0066cc;
+        }
+
+        .cta-button {
+            background: #0066cc;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #0052a3;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .section-header p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #0066cc;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            background: #f9fafb;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #0052a3;
+            background: #f5f7fa;
+        }
+
+        .upload-area.dragover {
+            border-color: #0052a3;
+            background: #e8eef5;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .upload-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .upload-subtext {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-types {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .file-type-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #0066cc;
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 12px;
+        }
+
+        .summary-content {
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #1a1a1a;
+        }
+
+        .document-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Browse Templates Button */
+        .browse-templates-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .browse-templates-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .browse-templates-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 3% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1100px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2.5rem;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .layout-card {
+            background: #f9fafb;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .layout-card:hover {
+            border-color: #0066cc;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+        }
+
+        .layout-card.selected {
+            border-color: #0066cc;
+            background: #e8f4ff;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+        }
+
+        .layout-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .layout-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .layout-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2.5rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Layout Preview Section */
+        .layout-preview {
+            background: white;
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+            display: none;
+        }
+
+        .layout-preview.active {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .preview-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            background: #fafafa;
+            overflow-x: auto;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            background: white;
+            border: 2px solid #0066cc;
+            color: #0066cc;
+            padding: 0.6rem 1.25rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-button:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .action-button.primary {
+            background: #0066cc;
+            color: white;
+        }
+
+        .action-button.primary:hover {
+            background: #0052a3;
+        }
+
+        .extracted-text {
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            max-height: 450px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #1a1a1a;
+        }
+
+        .text-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #0066cc;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 2rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            color: #1a1a1a;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            font-size: 0.95rem;
+            font-weight: 500;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .upload-section,
+            .summary-section,
+            .results-section,
+            .layout-preview {
+                padding: 2rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .text-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-header,
+            .results-header,
+            .preview-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .results-actions,
+            .preview-actions {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'partials/navbar.html' %}
+
+
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>OCR Text Extraction</h1>
+            <p>Upload your documents and extract text with advanced AI-powered OCR and custom layouts</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="section-header">
+                <h2>Upload Your Document</h2>
+                <p>Drag and drop your file or click to browse</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">Drop your file here or click to browse</div>
+                    <div class="upload-subtext">Select your document to extract and summarize text with AI-powered intelligence</div>
+                    <input type="file" id="fileInput" name="image" class="file-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.webp" required>
+                </div>
+                <div class="file-types">
+                    <span class="file-type-badge">PDF</span>
+                    <span class="file-type-badge">JPG</span>
+                    <span class="file-type-badge">PNG</span>
+                    <span class="file-type-badge">GIF</span>
+                    <span class="file-type-badge">TIFF</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- AI Summary Section -->
+        {% if summarized_text %}
+        <div class="summary-section fade-in">
+            <div class="summary-header">
+                <h2 class="summary-title">
+                     Summary
+                    <span class="ai-badge">Powered by our Transformer</span>
+                </h2>
+                <div class="results-actions">
+                    <button class="action-button" onclick="copySummary()">Copy Summary</button>
+                    <button class="action-button" onclick="downloadSummary()">Download Summary</button>
+                </div>
+            </div>
+            {% if document_type and confidence %}
+            <div class="document-info">
+                <div class="info-item">
+                    <div class="info-label">Document Type</div>
+                    <div class="info-value">{{ document_type }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Confidence</div>
+                    <div class="info-value">{{ confidence }}%</div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="summary-content" id="summaryText">{{ summarized_text }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Browse Templates Button -->
+        {% if extracted_text %}
+        <div class="summary-section fade-in" style="text-align: center;">
+            <div class="section-header">
+                <h2>🎨 Create Custom Layout</h2>
+                <p>Choose from professional templates to format your extracted text beautifully</p>
+            </div>
+            <button class="browse-templates-btn" onclick="openTemplateModal()">
+                <span>🎨</span> Browse Templates
+            </button>
+        </div>
+
+        <!-- Template Selection Modal -->
+        <div id="templateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Choose Your Template</h2>
+                    <span class="close" onclick="closeTemplateModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #666; margin-bottom: 1.5rem;">Select a professional layout style for your extracted text</p>
+                    
+                    <div class="layout-grid">
+                        <div class="layout-card" data-layout="professional" onclick="selectLayout('professional')">
+                            <div class="layout-icon">📋</div>
+                            <div class="layout-title">Professional</div>
+                            <div class="layout-description">Clean business document with header and footer</div>
+                        </div>
+
+                        <div class="layout-card" data-layout="modern" onclick="selectLayout('modern')">
+                            <div class="layout-icon">🎨</div>
+                            <div class="layout-title">Modern</div>
+                            <div class="layout-description">Gradient header with contemporary design</div>
+                        </div>
+
+                        <div class="layout-card" data-layout="minimalist" onclick="selectLayout('minimalist')">
+                            <div class="layout-icon">✨</div>
+                            <div class="layout-title">Minimalist</div>
+                            <div class="layout-description">Simple and elegant with clean typography</div>
+                        </div>
+                    </div>
+
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeTemplateModal()">Cancel</button>
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateLayout()" disabled>Generate Layout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Preview Section -->
+        <div class="layout-preview" id="layoutPreview">
+            <div class="preview-header">
+                <h2 class="preview-title">📄 Custom Layout Preview</h2>
+                <div class="preview-actions">
+                    <button class="action-button" onclick="downloadLayout()">💾 Download HTML</button>
+                    <button class="action-button" onclick="printLayout()">🖨️ Print</button>
+                    <button class="action-button primary" onclick="openTemplateModal()">🔄 Change Layout</button>
+                </div>
+            </div>
+            <div class="preview-content" id="previewContent"></div>
+        </div>
+
+        <!-- Full Extracted Text Section -->
+        <div class="results-section fade-in">
+            <div class="results-header">
+                <h2 class="results-title">Full Extracted Text</h2>
+                <div class="results-actions">
+                    <button class="action-button" onclick="copyToClipboard()">Copy Text</button>
+                    <button class="action-button" onclick="downloadText()">Download</button>
+                    <a href="{% url 'ocr' %}" class="action-button primary">Process Another</a>
+                </div>
+            </div>
+            <div class="extracted-text" id="extractedText">{{ extracted_text }}</div>
+            <div class="text-stats">
+                <div class="stat-card">
+                    <span class="stat-number">{{ word_count|default:"0" }}</span>
+                    <span class="stat-label">Words</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ char_count|default:"0" }}</span>
+                    <span class="stat-label">Characters</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ line_count|default:"0" }}</span>
+                    <span class="stat-label">Lines</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">99.5%</span>
+                    <span class="stat-label">Confidence</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not extracted_text %}
+        <div class="features-section" id="features">
+            <div class="section-header">
+                <h2>Why Choose Our OCR Solution</h2>
+                <p>Advanced technology for accurate and efficient text extraction</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">AI Summarization</h3>
+                    <p class="feature-description">Automatically generate concise summaries of extracted text using advanced transformer models</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Custom Layouts</h3>
+                    <p class="feature-description">Choose from 7 professional layout styles to format your documents beautifully</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Privacy Protection</h3>
+                    <p class="feature-description">Automatically detect Aadhar and PAN cards with privacy-preserving options</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">High Accuracy</h3>
+                    <p class="feature-description">99.5% accuracy rate with advanced neural networks and machine learning algorithms</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#">What is AI?</a></li>
+                        <li><a href="#">Get started</a></li>
+                        <li><a href="#">Global infrastructure</a></li>
+                        <li><a href="#">Customer stories</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Free services</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Solutions</h4>
+                    <ul>
+                        <li><a href="#">Solutions</a></li>
+                        <li><a href="#">Resources</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Partners</h4>
+                    <ul>
+                        <li><a href="#">Software companies</a></li>
+                        <li><a href="#">Marketplace</a></li>
+                        <li><a href="#">Find a partner</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Developer resources</a></li>
+                        <li><a href="#">Students</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Document Intelligence AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Store data
+        const extractedText = `{{ extracted_text|escapejs }}`;
+        const documentType = "{{ document_type|default:'Document' }}";
+        let selectedLayout = null;
+
+        // CSRF Token for AJAX
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Upload area interactions
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadForm = document.getElementById('uploadForm');
+
+        if (uploadArea) {
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    uploadForm.submit();
+                }
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    uploadForm.submit();
+                }
+            });
+        }
+
+        // Modal Functions
+        function openTemplateModal() {
+            document.getElementById('templateModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('templateModal');
+            if (event.target == modal) {
+                closeTemplateModal();
+            }
+        }
+
+        // Layout Selection
+        function selectLayout(layoutType) {
+            // Remove previous selection
+            document.querySelectorAll('.layout-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            document.querySelector(`[data-layout="${layoutType}"]`).classList.add('selected');
+            selectedLayout = layoutType;
+
+            // Enable generate button
+            document.getElementById('generateBtn').disabled = false;
+        }
+
+        // Generate Custom Layout
+        async function generateLayout() {
+            if (!selectedLayout) {
+                showNotification('Please select a layout first');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            const preview = document.getElementById('layoutPreview');
+
+            // Show loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            spinner.classList.add('active');
+
+            try {
+                const response = await fetch('/generate-layout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: new URLSearchParams({
+                        'extracted_text': extractedText,
+                        'document_type': documentType,
+                        'layout_type': selectedLayout
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Close modal
+                    closeTemplateModal();
+                    
+                    // Display preview
+                    document.getElementById('previewContent').innerHTML = data.html_content;
+                    preview.classList.add('active');
+                    preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    showNotification('✨ Layout generated successfully!');
+                } else {
+                    showNotification('❌ Failed to generate layout: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('❌ Error generating layout');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Layout';
+                spinner.classList.remove('active');
+            }
+        }
+
+        // Download Layout as HTML
+        function downloadLayout() {
+            const content = document.getElementById('previewContent').innerHTML;
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${documentType} - Custom Layout</title>
+</head>
+<body>
+    ${content}
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${documentType.replace(/\s+/g, '_')}_${selectedLayout}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('📥 Layout downloaded!');
+        }
+
+        // Print Layout
+        function printLayout() {
+            const content = document.getElementById('previewContent').innerHTML;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print - ${documentType}</title>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Copy Summary
+        function copySummary() {
+            const text = document.getElementById('summaryText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('📋 Summary copied!');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showNotification('❌ Failed to copy');
+            });
+        }
+
+        // Download Summary
+        function downloadSummary() {
+            const text = document.getElementById('summaryText').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('📥 Summary downloaded!');
+        }
+
+        // Copy Full Text
+        function copyToClipboard() {
+            navigator.clipboard.writeText(extractedText).then(() => {
+                showNotification('📋 Text copied!');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showNotification('❌ Failed to copy');
+            });
+        }
+
+        // Download Full Text
+        function downloadText() {
+            const blob = new Blob([extractedText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'extracted-text.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('📥 Text downloaded!');
+        }
+
+        // Notification Helper
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutDown 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

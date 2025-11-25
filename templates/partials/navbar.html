@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+{% comment %} templates/partials/navbar.html {% endcomment %}
+<header>
+  <nav style="max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;">
+    <a href="/" class="logo" style="font-size:1.5rem;font-weight:600;color:#0066cc;text-decoration:none;">
+      Document Intelligence AI
+    </a>
+
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <ul class="nav-links" style="display:flex;gap:1.25rem;list-style:none;margin:0;padding:0;">
+        <li><a href="/#overview">Overview</a></li>
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="{% url 'ocr' %}">OCR Tool</a></li>
+        <li><a href="{% url 'classification' %}">Classification</a></li>
+        <li><a href="{% url 'convert' %}">Convert</a></li>
+      </ul>
+
+      {% if is_authenticated %}
+        <!-- show profile + dropdown -->
+        <div id="userMenu" style="position:relative;">
+          <button id="userBtn" style="display:flex;align-items:center;gap:0.6rem;border:0;background:transparent;cursor:pointer;padding:6px 8px;border-radius:8px;">
+            <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-weight:700;">
+              {{ name|slice:":1"|upper }}
+            </div>
+            <span style="font-weight:600;color:#1a1a1a;">{{ name }}</span>
+            <svg style="width:14px;height:14px;opacity:0.7;" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div id="userDropdown" style="display:none;position:absolute;right:0;top:46px;background:white;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);min-width:160px;padding:8px;border:1px solid #eee;z-index:999;">
+            <div style="padding:8px 12px;border-bottom:1px solid #f0f0f0;margin-bottom:6px;">
+              <div style="font-weight:700;">{{ name }}</div>
+              <div style="font-size:0.85rem;color:#666;">{{ email }}</div>
+            </div>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}" style="color:#dc3545;margin-top:6px;">Logout</a>
+          </div>
+        </div>
+      {% else %}
+        <!-- not logged in: show Get Started -->
+        <a href="{% url 'login' %}" class="cta-button"
+           style="background:#0066cc;color:white;padding:0.6rem 1rem;border-radius:6px;text-decoration:none;font-weight:600;">
+          Get Started
+        </a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+
+
+<script>
+  (function(){
+    const btn = document.getElementById('userBtn');
+    const dd = document.getElementById('userDropdown');
+    if (!btn || !dd) return;
+
+    // toggle dropdown
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dd.style.display === 'block';
+      dd.style.display = isOpen ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', !isOpen);
+    });
+
+    // close on outside click
+    document.addEventListener('click', () => {
+      dd.style.display = 'none';
+      btn.setAttribute('aria-expanded', false);
+    });
+
+    // prevent closing when clicking inside
+    dd.addEventListener('click', (e) => e.stopPropagation());
+  })();
+</script>
+</body>
+</html>

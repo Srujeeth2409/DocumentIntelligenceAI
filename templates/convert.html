@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Conversion - Document Intelligence AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #0066cc;
+        }
+
+        .cta-button {
+            background: #0066cc;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cta-button:hover {
+            background: #0052a3;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Section Header */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+            border: 2px solid #e0e0e0;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-section.success {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .result-section.error {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .download-btn {
+            padding: 0.9rem 2.5rem;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #0052a3;
+        }
+
+        /* Conversion Grid */
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .conversion-category {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+            color: #1a1a1a;
+        }
+
+        .conversion-option {
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .conversion-option:hover {
+            border-color: #0066cc;
+            background: #f5f7fa;
+            transform: translateX(5px);
+        }
+
+        .conversion-option.selected {
+            border-color: #0066cc;
+            background: #e8eef5;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+        }
+
+        .conversion-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .conversion-arrow {
+            color: #0066cc;
+            font-size: 1.2rem;
+        }
+
+        .conversion-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .upload-section.show {
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #0066cc;
+            border-radius: 8px;
+            padding: 4rem 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            background: #f9fafb;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #0052a3;
+            background: #f5f7fa;
+        }
+
+        .upload-area.dragover {
+            border-color: #0052a3;
+            background: #e8eef5;
+            border-style: solid;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .upload-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .upload-subtext {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* File Info */
+        .file-info {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #e8eef5;
+            border-radius: 6px;
+            border: 1px solid #0066cc;
+        }
+
+        .file-info.show {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        /* Password Field */
+        .password-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .password-section.show {
+            display: block;
+        }
+
+        .password-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-section input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .password-section input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        /* Merge Files List */
+        .merge-files {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .merge-files.show {
+            display: block;
+        }
+
+        .merge-file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .merge-file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .merge-file-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .add-more-btn {
+            margin-top: 1rem;
+            padding: 0.7rem 1.5rem;
+            background: white;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .add-more-btn:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.9rem 2.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0052a3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+        }
+
+        .btn-secondary:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Processing Overlay */
+        .processing-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .processing-overlay.show {
+            display: flex;
+        }
+
+        .processing-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .conversion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upload-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/navbar.html' %}
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Document Conversion</h1>
+            <p>Transform documents between formats with LibreOffice-powered conversion. Maintain quality, formatting, and structure across all conversions.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Result Section -->
+        <div class="result-section {% if status %}show {{ status }}{% endif %}" id="resultSection">
+            <div class="result-icon" id="resultIcon">
+            {% if status == 'success' %}
+                    ✓
+                {% elif status == 'error' %}
+                    ✗
+                {% endif %}
+                </div>
+            <div class="result-message" id="resultMessage">
+                {% if status == 'success' %}
+                    Conversion successful! Your download should begin shortly.
+                {% elif status == 'error' %}
+                    {{ message }}
+                {% endif %}
+                    </div>
+            <div class="download-links" id="downloadLinks">
+                {% if status == 'success' %}
+                    {% if original_file %}
+                        <a href="{{ original_file }}" class="download-btn" download>Original File</a>
+                    {% endif %}
+                    {% if converted_file %}
+                        <a href="{{ converted_file }}" class="download-btn" download id="autoDownloadLink">Converted File</a>
+                    {% endif %}
+                {% endif %}
+                    </div>
+                </div>
+
+        <div class="section-header">
+            <h2>Select Conversion Type</h2>
+            <p>Choose the format conversion you need</p>
+                </div>
+
+        <div class="conversion-grid">
+            <!-- Convert to PDF -->
+            <div class="conversion-category">
+                <h3 class="category-title">Convert to PDF</h3>
+
+                <div class="conversion-option" data-type="jpg-to-pdf" data-accept=".jpg,.jpeg,.png" data-target="pdf">
+                    <div class="conversion-label">
+                        <span>Image to PDF</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Convert JPG/PNG images to PDF documents</div>
+                        </div>
+
+                <div class="conversion-option" data-type="word-to-pdf" data-accept=".doc,.docx" data-target="pdf">
+                    <div class="conversion-label">
+                                <span>Word to PDF</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Transform Word documents into PDFs</div>
+                        </div>
+
+                <div class="conversion-option" data-type="ppt-to-pdf" data-accept=".ppt,.pptx" data-target="pdf">
+                    <div class="conversion-label">
+                                <span>PowerPoint to PDF</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Export presentations as PDF files</div>
+                        </div>
+
+                <div class="conversion-option" data-type="excel-to-pdf" data-accept=".xls,.xlsx" data-target="pdf">
+                    <div class="conversion-label">
+                                <span>Excel to PDF</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Convert spreadsheets to PDF format</div>
+                    </div>
+                </div>
+
+            <!-- Convert from PDF -->
+            <div class="conversion-category">
+                <h3 class="category-title">Convert from PDF</h3>
+
+                <div class="conversion-option" data-type="pdf-to-jpg" data-accept=".pdf" data-target="jpg">
+                    <div class="conversion-label">
+                        <span>PDF to Image</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Extract pages as JPG images</div>
+                        </div>
+
+                <div class="conversion-option" data-type="pdf-to-word" data-accept=".pdf" data-target="word">
+                    <div class="conversion-label">
+                                <span>PDF to Word</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Convert to editable Word documents</div>
+                        </div>
+
+                <div class="conversion-option" data-type="pdf-to-ppt" data-accept=".pdf" data-target="ppt">
+                    <div class="conversion-label">
+                                <span>PDF to PowerPoint</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Transform into presentations</div>
+                        </div>
+
+                <div class="conversion-option" data-type="pdf-to-excel" data-accept=".pdf" data-target="excel">
+                    <div class="conversion-label">
+                                <span>PDF to Excel</span>
+                                <span class="conversion-arrow">→</span>
+                            </div>
+                    <div class="conversion-desc">Extract tables to spreadsheets</div>
+                        </div>
+                    </div>
+
+            <!-- PDF Tools -->
+            <div class="conversion-category">
+                <h3 class="category-title">PDF Tools</h3>
+
+                <div class="conversion-option" data-type="merge-pdf" data-accept=".pdf" data-target="merge" data-multiple="true">
+                    <div class="conversion-label">
+                        <span>Merge PDFs</span>
+                        <span class="conversion-arrow">⚡</span>
+                    </div>
+                    <div class="conversion-desc">Combine multiple PDFs into one</div>
+                </div>
+
+                <div class="conversion-option" data-type="protect-pdf" data-accept=".pdf" data-target="protect" data-password="true">
+                    <div class="conversion-label">
+                        <span>Password Protect</span>
+                                <span class="conversion-arrow">🔒</span>
+                            </div>
+                    <div class="conversion-desc">Add password encryption to PDFs</div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Upload Section -->
+            <div class="upload-section" id="uploadSection">
+            <div class="section-header">
+                <h2 id="uploadTitle">Upload Document</h2>
+                <p id="uploadDesc">Upload your file to begin conversion</p>
+                </div>
+
+            <form method="POST" action="{% url 'convert' %}" enctype="multipart/form-data" id="conversionForm">
+                    {% csrf_token %}
+
+                    <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                        </svg>
+                    </div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-subtext" id="acceptedFormats">Supported formats will appear here</div>
+                    <input type="file" id="fileInput" name="file">
+                    </div>
+
+                <div class="file-info" id="fileInfo">
+                    <div class="file-details">
+                            <span>📄</span>
+                        <div>
+                            <div class="file-name" id="fileName"></div>
+                            <div class="file-size" id="fileSize"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn" id="removeFileBtn">Remove</button>
+                    </div>
+
+                <div class="merge-files" id="mergeFiles">
+                    <div style="margin-bottom: 1rem; color: #666;">
+                        <span id="fileCount">0 files selected</span>
+                    </div>
+                    <div id="mergeFileList"></div>
+                    <button type="button" class="add-more-btn" id="addMoreBtn">+ Add More Files</button>
+                    </div>
+
+                <div class="password-section" id="passwordSection">
+                    <label for="pdfPassword">Password for PDF Protection</label>
+                    <input type="password" id="pdfPassword" name="pdf_password" placeholder="Enter a strong password">
+                    </div>
+
+                <input type="hidden" id="targetFormat" name="target_format">
+
+                    <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary" id="convertBtn" disabled>Convert</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+        </div>
+
+        <!-- Features -->
+        <div class="features-section">
+            <div class="section-header">
+                <h2>Professional Document Conversion</h2>
+                <p>Enterprise-grade features for all your conversion needs</p>
+                </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+            </div>
+                    <h3>High Quality</h3>
+                    <p>LibreOffice-powered conversions maintain document formatting and quality</p>
+        </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                    </div>
+                    <h3>Multiple Formats</h3>
+                    <p>Support for PDF, Word, Excel, PowerPoint, and image formats</p>
+    </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                        </svg>
+                    </div>
+                    <h3>Secure Processing</h3>
+                    <p>All conversions processed securely on your server</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <h3>Converting your document...</h3>
+            <p>Please wait while we process your file</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Document Intelligence AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const conversionOptions = document.querySelectorAll('.conversion-option');
+        const conversionGrid = document.querySelector('.conversion-grid');
+        const uploadSection = document.getElementById('uploadSection');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const mergeFiles = document.getElementById('mergeFiles');
+        const mergeFileList = document.getElementById('mergeFileList');
+        const fileCount = document.getElementById('fileCount');
+        const addMoreBtn = document.getElementById('addMoreBtn');
+        const passwordSection = document.getElementById('passwordSection');
+        const pdfPassword = document.getElementById('pdfPassword');
+        const targetFormat = document.getElementById('targetFormat');
+        const convertBtn = document.getElementById('convertBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const conversionForm = document.getElementById('conversionForm');
+        const processingOverlay = document.getElementById('processingOverlay');
+        const uploadTitle = document.getElementById('uploadTitle');
+        const uploadDesc = document.getElementById('uploadDesc');
+        const acceptedFormats = document.getElementById('acceptedFormats');
+        const resultSection = document.getElementById('resultSection');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultMessage = document.getElementById('resultMessage');
+        const downloadLinks = document.getElementById('downloadLinks');
+
+        let selectedConversion = null;
+        let isMultiple = false;
+        let requiresPassword = false;
+        let uploadedFiles = [];
+
+        conversionOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                conversionOptions.forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+
+                selectedConversion = {
+                    type: option.dataset.type,
+                    accept: option.dataset.accept || '',
+                    target: option.dataset.target || '',
+                    multiple: option.dataset.multiple === 'true',
+                    password: option.dataset.password === 'true'
+                };
+
+                isMultiple = selectedConversion.multiple;
+                requiresPassword = selectedConversion.password;
+
+                uploadedFiles = [];
+                fileInput.value = '';
+                fileInfo.classList.remove('show');
+                mergeFiles.classList.remove('show');
+                passwordSection.classList.toggle('show', requiresPassword);
+                pdfPassword.required = requiresPassword;
+                pdfPassword.value = '';
+                convertBtn.disabled = true;
+
+                fileInput.setAttribute('accept', selectedConversion.accept);
+                fileInput.setAttribute('name', isMultiple ? 'files' : 'file');
+                if (isMultiple) {
+                    fileInput.setAttribute('multiple', 'multiple');
+                } else {
+                    fileInput.removeAttribute('multiple');
+                }
+
+                uploadTitle.textContent = option.querySelector('.conversion-label span').textContent;
+
+                if (requiresPassword) {
+                    uploadDesc.textContent = 'Upload your PDF and set a password';
+                } else if (isMultiple) {
+                    uploadDesc.textContent = 'Upload multiple PDF files to merge (minimum 2 files)';
+                } else {
+                    uploadDesc.textContent = 'Upload your file to begin conversion';
+                }
+
+                acceptedFormats.textContent = isMultiple
+                    ? 'Accepted formats: .pdf (select at least two files)'
+                    : `Accepted formats: ${selectedConversion.accept || 'Supported file types'}`;
+
+                targetFormat.value = selectedConversion.target;
+
+                uploadSection.classList.add('show');
+                uploadSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+
+        uploadArea.addEventListener('click', () => {
+            if (!selectedConversion) {
+                alert('Please select a conversion type first.');
+                if (conversionGrid) {
+                    conversionGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                return;
+            }
+            fileInput.click();
+        });
+
+        if (addMoreBtn) {
+            addMoreBtn.addEventListener('click', () => {
+                if (!selectedConversion) {
+                    alert('Please select a conversion type first.');
+                    return;
+                }
+            fileInput.click();
+        });
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            if (!selectedConversion) {
+                e.target.value = '';
+                alert('Please select a conversion type first.');
+                return;
+            }
+
+            const files = Array.from(e.target.files);
+            if (!files.length) {
+                if (!isMultiple) {
+                    uploadedFiles = [];
+                    fileInfo.classList.remove('show');
+                    updateConvertButton();
+                }
+                return;
+            }
+
+            if (isMultiple) {
+                files.forEach(file => {
+                    if (!uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        uploadedFiles.push(file);
+                    }
+                });
+                updateMergeFileList();
+                fileInput.value = '';
+                } else {
+                uploadedFiles = [files[0]];
+                showFileInfo(files[0]);
+                    updateConvertButton();
+            }
+        });
+
+        function showFileInfo(file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('show');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return `${bytes} B`;
+            if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+            return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        function updateMergeFileList() {
+            if (!uploadedFiles.length) {
+                mergeFiles.classList.remove('show');
+                fileCount.textContent = '0 files selected';
+                mergeFileList.innerHTML = '';
+            updateConvertButton();
+                return;
+            }
+
+            mergeFiles.classList.add('show');
+            fileCount.textContent = `${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''} selected`;
+            mergeFileList.innerHTML = '';
+
+            uploadedFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'merge-file-item';
+                item.innerHTML = `
+                    <div class="merge-file-info">
+                        <div class="merge-file-number">${index + 1}</div>
+                        <div>
+                            <div style="font-weight:600;">${file.name}</div>
+                            <div style="font-size:0.85rem;color:#666;">${formatFileSize(file.size)}</div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn" data-index="${index}">Remove</button>
+                `;
+                mergeFileList.appendChild(item);
+            });
+
+            updateConvertButton();
+        }
+
+        mergeFileList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-btn')) {
+                const index = Number(e.target.getAttribute('data-index'));
+                if (!Number.isNaN(index)) {
+                    uploadedFiles.splice(index, 1);
+                    updateMergeFileList();
+                }
+            }
+        });
+
+        removeFileBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            uploadedFiles = [];
+            fileInfo.classList.remove('show');
+            updateConvertButton();
+        });
+
+        pdfPassword.addEventListener('input', updateConvertButton);
+
+        cancelBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            uploadedFiles = [];
+            fileInfo.classList.remove('show');
+            mergeFiles.classList.remove('show');
+            passwordSection.classList.remove('show');
+            pdfPassword.value = '';
+            convertBtn.disabled = true;
+            uploadSection.classList.remove('show');
+            conversionOptions.forEach(o => o.classList.remove('selected'));
+            selectedConversion = null;
+            if (conversionGrid) {
+                conversionGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            if (!selectedConversion) {
+                alert('Please select a conversion type first.');
+                return;
+            }
+
+            const files = Array.from(e.dataTransfer.files);
+            if (!files.length) return;
+
+            if (isMultiple) {
+                files.forEach(file => {
+                    if (!uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        uploadedFiles.push(file);
+                    }
+                });
+                updateMergeFileList();
+                } else {
+                uploadedFiles = [files[0]];
+                showFileInfo(files[0]);
+                    updateConvertButton();
+
+                if (window.DataTransfer) {
+                    const dt = new DataTransfer();
+                    dt.items.add(files[0]);
+                    fileInput.files = dt.files;
+                }
+            }
+        });
+
+        ['dragover', 'drop'].forEach(eventName => {
+            document.body.addEventListener(eventName, (e) => {
+                if (e.target !== uploadArea && !uploadArea.contains(e.target)) {
+                e.preventDefault();
+                }
+            });
+        });
+
+        function updateConvertButton() {
+            if (isMultiple) {
+                convertBtn.disabled = uploadedFiles.length < 2;
+            } else {
+                const hasFile = uploadedFiles.length > 0;
+                const hasPassword = !requiresPassword || pdfPassword.value.trim() !== '';
+                convertBtn.disabled = !(hasFile && hasPassword);
+            }
+        }
+
+        conversionForm.addEventListener('submit', (e) => {
+            if (!selectedConversion) {
+                e.preventDefault();
+                alert('Please select a conversion type before uploading.');
+                return;
+            }
+
+            if (isMultiple) {
+                e.preventDefault();
+
+                if (uploadedFiles.length < 2) {
+                    showErrorMessage('Please select at least two PDF files to merge.');
+                    return;
+                }
+
+                submitMergeRequest();
+            } else {
+                convertBtn.disabled = true;
+            }
+        });
+
+        function submitMergeRequest() {
+            processingOverlay.classList.add('show');
+            convertBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+            const formData = new FormData(conversionForm);
+            formData.delete('file');
+            formData.delete('files');
+            uploadedFiles.forEach(file => formData.append('files', file));
+            formData.set('target_format', 'merge');
+
+            fetch(conversionForm.getAttribute('action') || window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+            .then(response => {
+                const contentType = response.headers.get('content-type') || '';
+
+                if (response.ok && (contentType.includes('application/pdf') || contentType.includes('application/octet-stream') || contentType.includes('application/zip'))) {
+                    return response.blob().then(blob => {
+                        const filename = getFilenameFromDisposition(response.headers.get('content-disposition')) || 'merged.pdf';
+                        downloadBlob(blob, filename);
+                        showSuccessMessage('PDFs merged successfully. Your download should begin shortly.');
+                        cancelBtn.click();
+                    });
+                }
+
+                if (contentType.includes('application/json')) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Unable to merge PDFs. Please try again.');
+                    });
+                }
+
+                return response.text().then(text => {
+                    console.error('Merge response:', text);
+                    throw new Error('Unable to merge PDFs. Please try again.');
+                });
+            })
+            .catch(error => {
+                showErrorMessage(error.message);
+            })
+            .finally(() => {
+                processingOverlay.classList.remove('show');
+                convertBtn.disabled = false;
+                cancelBtn.disabled = false;
+            });
+        }
+
+        function downloadBlob(blob, filename) {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+            a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+        }
+
+        function getFilenameFromDisposition(disposition) {
+            if (!disposition) return null;
+            const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i);
+            if (match) {
+                return decodeURIComponent(match[1] || match[2]);
+            }
+            return null;
+        }
+
+        function showSuccessMessage(message) {
+            resultSection.className = 'result-section success show';
+            resultIcon.textContent = '✓';
+            resultMessage.textContent = message;
+            downloadLinks.innerHTML = '';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => resultSection.classList.remove('show'), 5000);
+        }
+
+        function showErrorMessage(message) {
+            resultSection.className = 'result-section error show';
+            resultIcon.textContent = '✗';
+            resultMessage.textContent = message;
+            downloadLinks.innerHTML = '';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => resultSection.classList.remove('show'), 5000);
+        }
+
+    </script>
+    {% if status == 'success' and converted_file %}
+    <script>
+        window.addEventListener('load', () => {
+            const autoDownloadLink = document.getElementById('autoDownloadLink');
+            if (autoDownloadLink) {
+                setTimeout(() => autoDownloadLink.click(), 500);
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

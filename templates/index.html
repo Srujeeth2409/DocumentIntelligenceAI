@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Intelligence AI - Extract Information from Documents</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #0066cc;
+        }
+
+        .cta-button {
+            background: #0066cc;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cta-button:hover {
+            background: #0052a3;
+        }
+
+        /* Get Started Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 560px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-title { font-size: 1.1rem; font-weight: 600; }
+        .modal-close { background: none; border: 0; font-size: 1.4rem; cursor: pointer; color: #666; }
+        .modal-body { padding: 1.25rem 1.5rem; }
+        .modal-actions { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .modal-link { display: block; text-decoration: none; padding: 0.9rem 1rem; border: 2px solid #0066cc; border-radius: 8px; color: #0066cc; font-weight: 600; text-align: center; }
+        .modal-link:hover { background: #0066cc; color: #fff; }
+        @media (min-width: 560px) { .modal-actions { grid-template-columns: 1fr 1fr 1fr; } }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .hero-visual {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 2rem;
+            position: sticky;
+            top: 65px;
+            z-index: 999;
+        }
+
+        .tab-nav ul {
+            max-width: 1400px;
+            margin: 0 auto;
+            list-style: none;
+            display: flex;
+            gap: 3rem;
+        }
+
+        .tab-nav a {
+            display: block;
+            padding: 1rem 0;
+            text-decoration: none;
+            color: #555;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-nav a:hover,
+        .tab-nav a.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 2rem;
+            scroll-margin-top: 130px;
+        }
+
+        .section-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Workflows Section */
+        #overview {
+            background: #f9fafb;
+        }
+
+        .workflow {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .workflow h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .workflow h3 svg {
+            width: 24px;
+            height: 24px;
+            fill: #667eea;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .workflow h3:hover svg {
+            fill: #764ba2;
+        }
+
+        .workflow p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Security Stats */
+        #security {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #0066cc;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Pricing Section */
+        #pricing {
+            background: white;
+        }
+
+        .pricing-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .pricing-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-image {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Customer Stories */
+        .customer-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .customer-logo {
+            width: 150px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .customer-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .customer-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        /* Resources Grid */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .resource-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .resource-content {
+            padding: 1.5rem;
+        }
+
+        .resource-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-content p {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .resource-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* FAQ Section */
+        .faq-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faq-number {
+            color: #0066cc;
+            margin-right: 1rem;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: #0066cc;
+            transition: transform 0.3s ease;
+            font-weight: 300;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding-top: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid,
+            .stats-grid,
+            .resources-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card,
+            .customer-card {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'partials/navbar.html' %}
+
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Document Intelligence AI</h1>
+                <p>Accelerate information extraction from documents with AI-powered intelligence.</p>
+                <a href="#" class="cta-button js-get-started" style="display: inline-block;">Get started</a>
+            </div>
+            <div class="hero-visual"></div>
+        </div>
+    </section>
+
+
+    <div class="tab-nav">
+        <ul>
+            <li><a href="#overview" class="active">Overview</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="overview" style="background: linear-gradient(180deg, #f9fafb 0%, #fff5f0 25%, #ffe8f5 50%, #f0e8ff 75%, #e8f0ff 100%); position: relative; overflow: hidden;">
+        <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; opacity: 0.3;" viewBox="0 0 1400 800">
+            <!-- Dots -->
+            <circle cx="120" cy="80" r="4" fill="#667eea"/>
+            <circle cx="280" cy="130" r="4" fill="#764ba2"/>
+            <circle cx="450" cy="90" r="4" fill="#f093fb"/>
+            <circle cx="650" cy="180" r="4" fill="#667eea"/>
+            <circle cx="850" cy="110" r="4" fill="#764ba2"/>
+            <circle cx="1050" cy="160" r="4" fill="#f093fb"/>
+            <circle cx="1250" cy="90" r="4" fill="#667eea"/>
+            <circle cx="180" cy="320" r="4" fill="#764ba2"/>
+            <circle cx="380" cy="420" r="4" fill="#f093fb"/>
+            <circle cx="580" cy="370" r="4" fill="#667eea"/>
+            <circle cx="780" cy="470" r="4" fill="#764ba2"/>
+            <circle cx="980" cy="400" r="4" fill="#f093fb"/>
+            <circle cx="1180" cy="440" r="4" fill="#667eea"/>
+            <circle cx="220" cy="620" r="4" fill="#764ba2"/>
+            <circle cx="480" cy="670" r="4" fill="#f093fb"/>
+            <circle cx="720" cy="620" r="4" fill="#667eea"/>
+            <circle cx="920" cy="700" r="4" fill="#764ba2"/>
+
+            <!-- Connecting Lines -->
+            <line x1="120" y1="80" x2="280" y2="130" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="280" y1="130" x2="450" y2="90" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="450" y1="90" x2="650" y2="180" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="650" y1="180" x2="850" y2="110" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="850" y1="110" x2="1050" y2="160" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="1050" y1="160" x2="1250" y2="90" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="180" y1="320" x2="380" y2="420" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="380" y1="420" x2="580" y2="370" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="580" y1="370" x2="780" y2="470" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="780" y1="470" x2="980" y2="400" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="980" y1="400" x2="1180" y2="440" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="220" y1="620" x2="480" y2="670" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="480" y1="670" x2="720" y2="620" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="720" y1="620" x2="920" y2="700" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="280" y1="130" x2="180" y2="320" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="650" y1="180" x2="580" y2="370" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="1050" y1="160" x2="980" y2="400" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+        </svg>
+
+        <div class="section-content" style="position: relative; z-index: 1;">
+            <div class="section-header">
+                <h2>Quickly extract text from documents</h2>
+                <p>AI Document Intelligence is an AI service that applies advanced machine learning to extract text from documents automatically and accurately. Turn documents into usable data and shift your focus to acting on information rather than compiling it.</p>
+            </div>
+
+            <div style="margin-top: 3rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+                <div class="workflow">
+                    <h3>
+                        <span>Easily extract text with our OCR feature</span>
+                        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </h3>
+                    <p>Accurately extract texts from documents, forms, receipts, invoices, and cards of various types without manual labeling by document type, intensive coding, or maintenance. Use Document Intelligence AI to extract information from your documents in an organized manner.</p>
+                </div>
+
+                <div class="workflow">
+                    <h3>
+                        <span>Customize text extraction to your forms</span>
+                        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </h3>
+                    <p>Train custom models tailored to your specific document types for enhanced accuracy and performance. Build custom extraction models with as few as five sample documents, and improve accuracy with human feedback loops. Custom models learn from your specific layouts and terminology to deliver precise results.</p>
+                </div>
+
+                <div class="workflow">
+                    <h3>
+                        <span>Apply AI Document Intelligence anywhere, in the cloud or at the edge</span>
+                        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </h3>
+                    <p>Deploy Document Intelligence flexibly based on your needs. Process documents in the cloud with Azure's scalable infrastructure, or deploy at the edge for low-latency, offline scenarios. Integrate seamlessly with search indexes, business automation workflows, data visualization services, and custom applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" style="background: linear-gradient(180deg, #f9fafb 0%, #fef5e7 25%, #fde8f0 50%, #e8eef5 75%, #e0e7ff 100%); position: relative; overflow: hidden;">
+        <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; opacity: 0.4;" viewBox="0 0 1400 800">
+            <!-- Dots -->
+            <circle cx="100" cy="100" r="4" fill="#667eea"/>
+            <circle cx="250" cy="150" r="4" fill="#764ba2"/>
+            <circle cx="400" cy="80" r="4" fill="#f093fb"/>
+            <circle cx="600" cy="200" r="4" fill="#667eea"/>
+            <circle cx="800" cy="120" r="4" fill="#764ba2"/>
+            <circle cx="1000" cy="180" r="4" fill="#f093fb"/>
+            <circle cx="1200" cy="100" r="4" fill="#667eea"/>
+            <circle cx="150" cy="300" r="4" fill="#764ba2"/>
+            <circle cx="350" cy="400" r="4" fill="#f093fb"/>
+            <circle cx="550" cy="350" r="4" fill="#667eea"/>
+            <circle cx="750" cy="450" r="4" fill="#764ba2"/>
+            <circle cx="950" cy="380" r="4" fill="#f093fb"/>
+            <circle cx="1150" cy="420" r="4" fill="#667eea"/>
+            <circle cx="200" cy="600" r="4" fill="#764ba2"/>
+            <circle cx="450" cy="650" r="4" fill="#f093fb"/>
+            <circle cx="700" cy="600" r="4" fill="#667eea"/>
+            <circle cx="900" cy="680" r="4" fill="#764ba2"/>
+            <circle cx="1100" cy="620" r="4" fill="#f093fb"/>
+
+            <!-- Connecting Lines -->
+            <line x1="100" y1="100" x2="250" y2="150" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="250" y1="150" x2="400" y2="80" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="400" y1="80" x2="600" y2="200" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="600" y1="200" x2="800" y2="120" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="800" y1="120" x2="1000" y2="180" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="1000" y1="180" x2="1200" y2="100" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="150" y1="300" x2="350" y2="400" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="350" y1="400" x2="550" y2="350" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="550" y1="350" x2="750" y2="450" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="750" y1="450" x2="950" y2="380" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="950" y1="380" x2="1150" y2="420" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="200" y1="600" x2="450" y2="650" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="450" y1="650" x2="700" y2="600" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="700" y1="600" x2="900" y2="680" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="900" y1="680" x2="1100" y2="620" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="250" y1="150" x2="150" y2="300" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="600" y1="200" x2="550" y2="350" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+            <line x1="1000" y1="180" x2="950" y2="380" stroke="#f093fb" stroke-width="1" opacity="0.3"/>
+            <line x1="350" y1="400" x2="450" y2="650" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+            <line x1="750" y1="450" x2="700" y2="600" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+        </svg>
+
+        <div class="section-content" style="position: relative; z-index: 1;">
+            <div class="section-header">
+                <h2>Simple, secure data extraction with flexible deployment</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Simple text extraction</h3>
+                    <p>Easily pull data and organize information with prebuilt and custom features—no manual labeling required.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Customized results</h3>
+                    <p>Get output tailored to your layouts with automatic custom extraction and improve it with human feedback.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Flexible deployment</h3>
+                    <p>Ingest data from the cloud or at the edge and apply to search indexes, business automation workflows, and more.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Built-in security</h3>
+                    <p>Rely on enterprise-grade security and privacy applied to both your data and any trained models.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Analyze forms and documents</h3>
+                    <p>Make data-driven decisions by extracting data from documents and putting it into your data visualization service.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3>Create intelligent search indexes</h3>
+                    <p>Easily find specific information in your documents and forms by integrating AI with search capabilities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FAQ Section -->
+    <section id="faq">
+        <div class="section-content">
+            <div class="section-header">
+                <h2>Frequently asked questions</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><span class="faq-number">01</span>What types of documents does it work with?</span>
+                        <span>+</span>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><span class="faq-number">02</span>What languages does it support?</span>
+                        <span>+</span>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><span class="faq-number">03</span>What's the difference between custom and prebuilt features?</span>
+                        <span>+</span>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><span class="faq-number">04</span>What is the layout feature?</span>
+                        <span>+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="modal-overlay" id="getStartedModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="getStartedTitle">
+            <div class="modal-header">
+                <div class="modal-title" id="getStartedTitle">Choose what you want to do</div>
+                <button type="button" class="modal-close" id="getStartedClose" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-actions">
+                    <a class="modal-link" href="/ocr/">OCR</a>
+                    <a class="modal-link" href="/classification/">Classification</a>
+                    <a class="modal-link" href="/convert/">Convert</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll with active tab highlighting
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    // Update active state in tab navigation
+                    document.querySelectorAll('.tab-nav a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+
+                    const tabLink = document.querySelector(`.tab-nav a[href="${this.getAttribute('href')}"]`);
+                    if (tabLink) {
+                        tabLink.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Update active tab on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const tabLinks = document.querySelectorAll('.tab-nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tabLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Get Started modal logic
+        const getStartedButtons = document.querySelectorAll('.js-get-started');
+        const getStartedModal = document.getElementById('getStartedModal');
+        const getStartedClose = document.getElementById('getStartedClose');
+
+        function openGetStarted(e) {
+            if (e) e.preventDefault();
+            if (getStartedModal) {
+                getStartedModal.style.display = 'flex';
+                getStartedModal.setAttribute('aria-hidden', 'false');
+            }
+        }
+        function closeGetStarted() {
+            if (getStartedModal) {
+                getStartedModal.style.display = 'none';
+                getStartedModal.setAttribute('aria-hidden', 'true');
+            }
+        }
+        getStartedButtons.forEach(btn => btn.addEventListener('click', openGetStarted));
+        if (getStartedClose) getStartedClose.addEventListener('click', closeGetStarted);
+        if (getStartedModal) {
+            getStartedModal.addEventListener('click', (e) => {
+                if (e.target === getStartedModal) closeGetStarted();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeGetStarted();
+            });
+        }
+    </script>
+</body>
+</html>

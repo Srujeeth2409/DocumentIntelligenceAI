@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Document Intelligence AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #1a1a1a;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .action-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* File Manager Section */
+        .file-manager {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .file-manager-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .new-folder-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .new-folder-btn:hover {
+            background: #5568d3;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+        }
+
+        /* Folder Grid */
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .folder-item {
+            background: #f9fafb;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .folder-item:hover {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .folder-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .folder-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+
+        .folder-info {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .folder-actions {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .folder-item:hover .folder-actions {
+            display: flex;
+        }
+
+        .folder-action-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .folder-action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .folder-action-btn.delete {
+            color: #dc3545;
+        }
+
+        .folder-action-btn.delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Files List */
+        .files-list {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 1.5rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f9fafb;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-action-btn {
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .file-action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .file-action-btn.delete {
+            color: #dc3545;
+        }
+
+        .file-action-btn.delete:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .modal-btn.confirm {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-btn.confirm:hover {
+            background: #5568d3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .folder-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .file-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/navbar.html' %}
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Welcome back, {{ name }}!</h1>
+            <p>Manage your documents and access intelligence tools</p>
+            <p style="margin-top:0.5rem;color:#666;font-size:0.95rem;">
+                Logged in as <strong>{{ email }}</strong>
+            </p>
+        </div>
+
+    <section class="quick-actions">
+        <h2 class="section-title">Recent Activity</h2>
+        {% if documents %}
+            <div class="actions-grid">
+                {% for doc in documents|slice:":3" %}
+                    <div class="action-card">
+                        <div class="action-icon">📄</div>
+                        <h3>{{ doc.file_name|default:doc.document_type }}</h3>
+                        <p>Type: {{ doc.document_type }} • Confidence: {{ doc.confidence }}%</p>
+                        <p style="color:#666;font-size:0.9rem;margin-top:0.5rem;">
+                            {{ doc.created_at }}
+                        </p>
+                        {% if doc.pdf_url %}
+                            <a href="{{ doc.pdf_url }}" class="action-card" style="display:inline-block;margin-top:0.5rem;">Download Report</a>
+                        {% elif doc.file_url %}
+                            <a href="{{ doc.file_url }}" class="action-card" style="display:inline-block;margin-top:0.5rem;">Open File</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No recent activity — process a document to see it here.</p>
+        {% endif %}
+    </section>
+
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="/ocr/" class="action-card">
+                    <div class="action-icon">📄</div>
+                    <h3>OCR</h3>
+                    <p>Extract text from images and scanned documents</p>
+                </a>
+
+                <a href="/classification/" class="action-card">
+                    <div class="action-icon">🏷️</div>
+                    <h3>Classification</h3>
+                    <p>Automatically classify and organize documents</p>
+                </a>
+
+                <a href="/convert/" class="action-card">
+                    <div class="action-icon">🔄</div>
+                    <h3>Convert</h3>
+                    <p>Convert documents between different formats</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- File Manager -->
+        <section class="file-manager">
+            <div class="file-manager-header">
+                <h2 class="section-title">My Documents</h2>
+                <button class="new-folder-btn" onclick="openNewFolderModal()">
+                    + New Folder
+                </button>
+            </div>
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="#" onclick="navigateToRoot()">Home</a>
+                <span id="breadcrumbPath"></span>
+            </div>
+
+            <!-- Folders -->
+            <div class="folder-grid" id="folderGrid">
+                <!-- Folders will be dynamically loaded here -->
+            </div>
+
+            <!-- Files -->
+            <div class="files-list" id="filesList">
+                <h3 style="margin-bottom:0.75rem;">All Documents</h3>
+                {% if documents %}
+                    {% for doc in documents %}
+                        <div class="file-item">
+                            <div class="file-info">
+                                <div class="file-icon">📄</div>
+                                <div class="file-details">
+                                    <div class="file-name">{{ doc.file_name }}</div>
+                                    <div class="file-meta">
+                                        {{ doc.operation }} • {{ doc.document_type }} • Confidence: {{ doc.confidence }}% • {{ doc.created_at }}
+                                    </div>
+                                    {% if doc.meta %}
+                                        <div style="margin-top:0.5rem;font-size:0.9rem;color:#444;">
+                                            <!-- example: show some meta keys -->
+                                            {% for key, val in doc.meta.items %}
+                                                <div><strong>{{ key }}:</strong> {{ val }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="file-actions">
+                                {% if doc.pdf_url %}
+                                    <a class="file-action-btn" href="{{ doc.pdf_url }}">Download PDF</a>
+                                {% elif doc.file_url %}
+                                    <a class="file-action-btn" href="{{ doc.file_url }}">Open</a>
+                                {% endif %}
+                                {% if doc.redacted_url %}
+                                    <a class="file-action-btn" href="{{ doc.redacted_url }}">Redacted</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <h3>No documents yet</h3>
+                        <p>Start by creating a folder or uploading documents through our tools</p>
+                    </div>
+                {% endif %}
+            </div>
+
+                <!-- Files will be dynamically loaded here -->
+    </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">📁</div>
+                <h3>No documents yet</h3>
+                <p>Start by creating a folder or uploading documents through our tools</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- New Folder Modal -->
+    <div class="modal" id="newFolderModal">
+        <div class="modal-content">
+            <div class="modal-header">Create New Folder</div>
+            <div class="modal-body">
+                <input
+                    type="text"
+                    class="modal-input"
+                    id="folderNameInput"
+                    placeholder="Enter folder name"
+                    maxlength="50"
+                >
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeNewFolderModal()">Cancel</button>
+                <button class="modal-btn confirm" onclick="createFolder()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Modal -->
+    <div class="modal" id="renameModal">
+        <div class="modal-content">
+            <div class="modal-header">Rename</div>
+            <div class="modal-body">
+                <input
+                    type="text"
+                    class="modal-input"
+                    id="renameInput"
+                    placeholder="Enter new name"
+                    maxlength="50"
+                >
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeRenameModal()">Cancel</button>
+                <button class="modal-btn confirm" onclick="confirmRename()">Rename</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current path tracking
+        let currentPath = '';
+        let currentRenameItem = null;
+        let currentRenameType = null;
+
+        // Sample data structure - replace with actual backend data
+        let fileSystem = {
+            folders: [
+                { id: 1, name: 'My Projects', path: '', files: 3, created: '2024-01-15' },
+                { id: 2, name: 'Invoices', path: '', files: 12, created: '2024-02-01' },
+                { id: 3, name: 'Receipts', path: '', files: 8, created: '2024-02-10' }
+            ],
+            files: [
+                { id: 1, name: 'Document1.pdf', path: '', size: '2.4 MB', type: 'pdf', modified: '2024-03-01' },
+                { id: 2, name: 'Scanned_Image.jpg', path: '', size: '1.8 MB', type: 'image', modified: '2024-03-05' },
+                { id: 3, name: 'Invoice_2024.docx', path: '', size: '456 KB', type: 'doc', modified: '2024-03-10' }
+            ]
+        };
+
+        // Initialize
+        function init() {
+            loadFolders();
+            loadFiles();
+        }
+
+        // Load folders
+        function loadFolders() {
+            const folderGrid = document.getElementById('folderGrid');
+            const folders = fileSystem.folders.filter(f => f.path === currentPath);
+
+            if (folders.length === 0 && fileSystem.files.filter(f => f.path === currentPath).length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                folderGrid.innerHTML = '';
+                document.getElementById('filesList').innerHTML = '';
+                return;
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+
+            folderGrid.innerHTML = folders.map(folder => `
+                <div class="folder-item" ondblclick="openFolder(${folder.id})">
+                    <div class="folder-actions">
+                        <button class="folder-action-btn" onclick="event.stopPropagation(); renameFolder(${folder.id})">✏️</button>
+                        <button class="folder-action-btn delete" onclick="event.stopPropagation(); deleteFolder(${folder.id})">🗑️</button>
+                    </div>
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">${folder.name}</div>
+                    <div class="folder-info">${folder.files} items</div>
+                </div>
+            `).join('');
+        }
+
+        // Load files
+        function loadFiles() {
+            const filesList = document.getElementById('filesList');
+            const files = fileSystem.files.filter(f => f.path === currentPath);
+
+            if (files.length === 0) {
+                filesList.innerHTML = '';
+                return;
+            }
+
+            filesList.innerHTML = files.map(file => `
+                <div class="file-item">
+                    <div class="file-info">
+                        <div class="file-icon">${getFileIcon(file.type)}</div>
+                        <div class="file-details">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-meta">${file.size} • Modified ${file.modified}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-action-btn" onclick="downloadFile(${file.id})">Download</button>
+                        <button class="file-action-btn" onclick="renameFile(${file.id})">Rename</button>
+                        <button class="file-action-btn delete" onclick="deleteFile(${file.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get file icon
+        function getFileIcon(type) {
+            const icons = {
+                pdf: '📄',
+                image: '🖼️',
+                doc: '📝',
+                default: '📄'
+            };
+            return icons[type] || icons.default;
+        }
+
+        // Modal functions
+        function openNewFolderModal() {
+            document.getElementById('newFolderModal').classList.add('active');
+            document.getElementById('folderNameInput').value = '';
+            document.getElementById('folderNameInput').focus();
+        }
+
+        function closeNewFolderModal() {
+            document.getElementById('newFolderModal').classList.remove('active');
+        }
+
+        function createFolder() {
+            const folderName = document.getElementById('folderNameInput').value.trim();
+            if (!folderName) {
+                alert('Please enter a folder name');
+                return;
+            }
+
+            // Add folder to the system
+            const newFolder = {
+                id: Date.now(),
+                name: folderName,
+                path: currentPath,
+                files: 0,
+                created: new Date().toISOString().split('T')[0]
+            };
+
+            fileSystem.folders.push(newFolder);
+            loadFolders();
+            closeNewFolderModal();
+
+            // TODO: Send to backend
+            // fetch('/api/folders', { method: 'POST', body: JSON.stringify(newFolder) })
+        }
+
+        function openFolder(folderId) {
+            const folder = fileSystem.folders.find(f => f.id === folderId);
+            if (folder) {
+                currentPath = currentPath ? `${currentPath}/${folder.name}` : folder.name;
+                updateBreadcrumb();
+                loadFolders();
+                loadFiles();
+            }
+        }
+
+        function navigateToRoot() {
+            currentPath = '';
+            updateBreadcrumb();
+            loadFolders();
+            loadFiles();
+        }
+
+        function updateBreadcrumb() {
+            const breadcrumbPath = document.getElementById('breadcrumbPath');
+            if (currentPath) {
+                const parts = currentPath.split('/');
+                breadcrumbPath.innerHTML = parts.map((part, index) => `
+                    <span>›</span>
+                    <a href="#" onclick="navigateToPath('${parts.slice(0, index + 1).join('/')}')">${part}</a>
+                `).join('');
+            } else {
+                breadcrumbPath.innerHTML = '';
+            }
+        }
+
+        function navigateToPath(path) {
+            currentPath = path;
+            updateBreadcrumb();
+            loadFolders();
+            loadFiles();
+        }
+
+        // Rename functions
+        function renameFolder(folderId) {
+            const folder = fileSystem.folders.find(f => f.id === folderId);
+            if (folder) {
+                currentRenameItem = folder;
+                currentRenameType = 'folder';
+                document.getElementById('renameInput').value = folder.name;
+                document.getElementById('renameModal').classList.add('active');
+                document.getElementById('renameInput').focus();
+            }
+        }
+
+        function renameFile(fileId) {
+            const file = fileSystem.files.find(f => f.id === fileId);
+            if (file) {
+                currentRenameItem = file;
+                currentRenameType = 'file';
+                document.getElementById('renameInput').value = file.name;
+                document.getElementById('renameModal').classList.add('active');
+                document.getElementById('renameInput').focus();
+            }
+        }
+
+        function closeRenameModal() {
+            document.getElementById('renameModal').classList.remove('active');
+            currentRenameItem = null;
+            currentRenameType = null;
+        }
+
+        function confirmRename() {
+            const newName = document.getElementById('renameInput').value.trim();
+            if (!newName) {
+                alert('Please enter a name');
+                return;
+            }
+
+            if (currentRenameItem) {
+                currentRenameItem.name = newName;
+                if (currentRenameType === 'folder') {
+                    loadFolders();
+                } else {
+                    loadFiles();
+                }
+                closeRenameModal();
+
+                // TODO: Send to backend
+            }
+        }
+
+        // Delete functions
+        function deleteFolder(folderId) {
+            if (confirm('Are you sure you want to delete this folder? All contents will be deleted.')) {
+                fileSystem.folders = fileSystem.folders.filter(f => f.id !== folderId);
+                loadFolders();
+                // TODO: Send to backend
+            }
+        }
+
+        function deleteFile(fileId) {
+            if (confirm('Are you sure you want to delete this file?')) {
+                fileSystem.files = fileSystem.files.filter(f => f.id !== fileId);
+                loadFiles();
+                // TODO: Send to backend
+            }
+        }
+
+        function downloadFile(fileId) {
+            const file = fileSystem.files.find(f => f.id === fileId);
+            if (file) {
+                alert(`Downloading ${file.name}...`);
+                // TODO: Implement actual download
+            }
+        }
+
+        // Initialize on load
+        init();
+
+        // Close modals on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeNewFolderModal();
+                closeRenameModal();
+            }
+        });
+
+        // Submit on Enter key
+        document.getElementById('folderNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') createFolder();
+        });
+
+        document.getElementById('renameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') confirmRename();
+        });
+    </script>
+</body>
+</html>

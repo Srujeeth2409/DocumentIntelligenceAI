@@ -1,0 +1,134 @@
+[
+  {
+    "text": "INVOICE #12345 Date: 01/15/2024 Bill To: ABC Corporation Items: Product A - $500, Product B - $750 Subtotal: $1250 Tax: $125 Total: $1375",
+    "doc_type": "Invoice",
+    "chosen_template": 0,
+    "user_rating": 5
+  },
+  {
+    "text": "Tax Invoice GST No: 29ABCDE1234F1Z5 Invoice No: INV-2024-001 Date: 15-Jan-2024 Items and Services rendered Total Amount: Rs. 45,000",
+    "doc_type": "Invoice",
+    "chosen_template": 1,
+    "user_rating": 5
+  },
+  {
+    "text": "Government of India Unique Identification Authority Aadhaar Number: 1234 5678 9012 Name: John Doe DOB: 01/01/1990 Address: 123 Main Street",
+    "doc_type": "Aadhar Card",
+    "chosen_template": 4,
+    "user_rating": 5
+  },
+  {
+    "text": "INCOME TAX DEPARTMENT GOVT OF INDIA Permanent Account Number Card Name: JANE SMITH Father's Name: ROBERT SMITH Date of Birth: 15/03/1985 PAN: ABCDE1234F",
+    "doc_type": "PAN Card",
+    "chosen_template": 0,
+    "user_rating": 5
+  },
+  {
+    "text": "JOHN DOE Senior Software Engineer Email: john@example.com Phone: +1-234-567-8900 EXPERIENCE Software Engineer at Tech Corp 2020-Present EDUCATION BS Computer Science",
+    "doc_type": "Resume",
+    "chosen_template": 6,
+    "user_rating": 5
+  },
+  {
+    "text": "Dear Sir/Madam, This letter is to inform you about our new service offerings. We are pleased to announce that starting next month, we will be providing expanded support. Sincerely, Management Team",
+    "doc_type": "Letter",
+    "chosen_template": 2,
+    "user_rating": 4
+  },
+  {
+    "text": "QUARTERLY REPORT Q4 2023 Executive Summary: Sales increased by 25% compared to last quarter. Key Metrics: Revenue: $5M, Expenses: $3M, Profit: $2M. Market Analysis shows positive trends.",
+    "doc_type": "Report",
+    "chosen_template": 3,
+    "user_rating": 5
+  },
+  {
+    "text": "The Future of Artificial Intelligence: A Deep Dive In recent years, artificial intelligence has transformed numerous industries. From healthcare to finance, AI applications continue to expand. This article explores the latest developments.",
+    "doc_type": "Article",
+    "chosen_template": 3,
+    "user_rating": 5
+  },
+  {
+    "text": "SALES INVOICE Invoice #: SI-2024-125 Date: January 20, 2024 Customer: XYZ Enterprises Product Description Quantity Unit Price Amount Widget A 10 $50 $500 Widget B 5 $100 $500 Subtotal: $1000",
+    "doc_type": "Invoice",
+    "chosen_template": 5,
+    "user_rating": 4
+  },
+  {
+    "text": "AADHAAR ENROLMENT/UPDATE FORM Enrolment No: 1234/56789/01234 Name: AMIT KUMAR Gender: Male Date of Birth: 12/05/1992 Address: Flat 101, Building A, Mumbai",
+    "doc_type": "Aadhar Card",
+    "chosen_template": 0,
+    "user_rating": 5
+  },
+  {
+    "text": "PERMANENT ACCOUNT NUMBER CARD Income Tax Department Name: PRIYA SHARMA Father's Name: RAKESH SHARMA DOB: 20/08/1988 PAN: FGHIJ5678K",
+    "doc_type": "PAN Card",
+    "chosen_template": 2,
+    "user_rating": 5
+  },
+  {
+    "text": "SARAH JOHNSON Project Manager sarah.j@company.com | (555) 123-4567 PROFESSIONAL SUMMARY Experienced project manager with 8+ years in IT. WORK HISTORY Project Lead - Tech Solutions 2018-Present",
+    "doc_type": "Resume",
+    "chosen_template": 1,
+    "user_rating": 4
+  },
+  {
+    "text": "To Whom It May Concern, This is to certify that Mr. David Wilson has been employed with our organization from January 2020 to December 2023. During this period, he demonstrated excellent professional conduct. Best regards, HR Department",
+    "doc_type": "Letter",
+    "chosen_template": 4,
+    "user_rating": 5
+  },
+  {
+    "text": "ANNUAL FINANCIAL REPORT 2023 Company Overview This report presents the financial performance for fiscal year 2023. Revenue Growth: 15% Operating Income: $10M Net Profit Margin: 18%",
+    "doc_type": "Report",
+    "chosen_template": 5,
+    "user_rating": 5
+  },
+  {
+    "text": "Understanding Machine Learning Basics Machine learning is a subset of AI that enables systems to learn from data. This comprehensive guide covers fundamental concepts including supervised learning, unsupervised learning, and neural networks.",
+    "doc_type": "Article",
+    "chosen_template": 5,
+    "user_rating": 4
+  },
+  {
+    "text": "PROFORMA INVOICE No: PI-2024-089 Date: Feb 5, 2024 Buyer: Global Imports Ltd Description: Electronic Components Qty: 1000 units Price per unit: $2.50 Total Value: $2,500",
+    "doc_type": "Invoice",
+    "chosen_template": 0,
+    "user_rating": 5
+  },
+  {
+    "text": "Government of India UID Card Aadhaar No: 9876 5432 1098 Name: RAJESH KUMAR DOB: 15/03/1995 Male Address: House 45, Sector 12, Delhi 110001",
+    "doc_type": "Aadhar Card",
+    "chosen_template": 2,
+    "user_rating": 4
+  },
+  {
+    "text": "Income Tax PAN Card Name: MEERA PATEL Father: VIJAY PATEL DOB: 05/07/1990 Permanent Account No: KLMNO9012P Signature",
+    "doc_type": "PAN Card",
+    "chosen_template": 4,
+    "user_rating": 5
+  },
+  {
+    "text": "MICHAEL CHEN Data Scientist Ph.D. Candidate michael.chen@university.edu EDUCATION Ph.D. Computer Science - Stanford 2020-2024 RESEARCH AI for Healthcare, Published 12 papers",
+    "doc_type": "Resume",
+    "chosen_template": 2,
+    "user_rating": 5
+  },
+  {
+    "text": "Dear Valued Customer, Thank you for your continued partnership. We are writing to inform you of upcoming changes to our service terms effective March 1, 2024. Please review the attached documentation. Regards, Customer Service Team",
+    "doc_type": "Letter",
+    "chosen_template": 0,
+    "user_rating": 5
+  },
+  {
+    "text": "Invoice no: 18999056\n\nDate of issue:\n\nSeller:\n\nWood-Kim\n8881 Nicholas Grove\nWest Andrewshire, WA 71685\n\nTax Id: 900-76-1437\nIBAN: GB96KZTB85221072973831\n\nITEMS\nNo.\n\nDescription\n\ni. NINTENDO 64 CONSOLE Plus 2\nGAMES Barely Played With in\nPARTIAL ORIGINAL BOX\n\nSUMMARY\n\nTotal\n\nQty\n\nVAT [%]\n\n10%\n\nUM\n\neach\n\n07/29/2011\n\nClient:\n\nThompson PLC\n810 Adkins Canyon\nKristinton, ND 66973\n\nTax Id: 934-91-7704\n\nNet price Net worth VAT [%]\n49,99 149,97 10%\nNet worth VAT\n149,97 15,00\n$ 149,97 $ 15,00\n\nGross\nworth\n",
+    "doc_type": "Invoice",
+    "chosen_template": 4,
+    "user_rating": 5
+  },
+  {
+    "text": "Invoice no: 33289699\n\nDate of issue:\n\nSeller:\n\nHall-Martinez\n3197 jillian Forks Suite 115\nKimchester, HI 43821\n\nTax Id: 941-80-9599\nIBAN: GB32HGAS20083011657056\n\nITEMS\n\nNo. Description\n\n1. Nintendo GameCube Console\nDOL-001 Black w/ Controller,\nPower, A/V,\nSUMMARY\n\nTotal\n\n12/24/2012\n\nClient:\n\nHaynes-Woods\nUSNV Gilbert\nFPO AP 32645\n\nTax Id: 953-82-2864\n\nQty UM Net price Net worth VAT [%] Gross\nworth\n\n5,00 each 79,99 399,95 10% 439,95\nVAT [%] Net worth VAT Gross worth\n10% 399,95 40,00 439,95\n\n$ 399",
+    "doc_type": "Invoice",
+    "chosen_template": 1,
+    "user_rating": 5
+  }
+]

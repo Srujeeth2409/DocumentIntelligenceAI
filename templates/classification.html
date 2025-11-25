@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Document Classification - Document Intelligence AI</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    scroll-behavior: smooth;
+    background: #f5f7fa;
+}
+/* Header */
+header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0066cc;
+}
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+.nav-links a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+.nav-links a:hover {
+    color: #0066cc;
+}
+.cta-button {
+    background: #0066cc;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+.cta-button:hover {
+    background: #0052a3;
+}
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 5rem 2rem;
+    text-align: center;
+    color: white;
+}
+.hero-content h1 {
+    font-size: 3rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+.hero-content p {
+    font-size: 1.25rem;
+    opacity: 0.95;
+    max-width: 800px;
+    margin: 0 auto;
+}
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+/* Upload Section */
+.upload-section {
+    background: white;
+    border-radius: 8px;
+    padding: 3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 3rem;
+}
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.section-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+.section-header p {
+    color: #555;
+    font-size: 1.1rem;
+}
+.upload-area {
+    border: 2px dashed #667eea;
+    border-radius: 8px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s;
+    background: #f9fafb;
+    cursor: pointer;
+}
+.upload-area:hover {
+    border-color: #764ba2;
+    background: #f5f7fa;
+}
+.upload-area.dragover {
+    border-color: #764ba2;
+    background: #e8eef5;
+}
+.upload-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+.upload-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+.upload-subtext {
+    color: #666;
+    font-size: 1rem;
+}
+.file-input {
+    display: none;
+}
+.file-types {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+.file-type-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+/* Loading State */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1.5rem;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.loading-subtext {
+    color: #666;
+}
+/* Classification Results */
+.classification-section {
+    background: white;
+    border-radius: 8px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #667eea;
+}
+.classification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.classification-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.ai-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 12px;
+}
+.document-preview {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+.preview-image {
+    flex: 1;
+    min-width: 300px;
+}
+.preview-image img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+.classification-details {
+    flex: 1;
+    min-width: 300px;
+}
+.result-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+.result-type {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+.result-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.confidence-bar {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+.confidence-fill {
+    background: white;
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease-out;
+}
+.confidence-text {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+.extracted-fields {
+    background: #f9fafb;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+.field-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.field-item:last-child {
+    border-bottom: none;
+}
+.field-label {
+    font-weight: 600;
+    color: #666;
+}
+.field-value {
+    color: #1a1a1a;
+    font-weight: 500;
+}
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.action-button {
+    background: white;
+    border: 2px solid #667eea;
+    color: #667eea;
+    padding: 0.6rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+.action-button:hover {
+    background: #667eea;
+    color: white;
+}
+.action-button.primary {
+    background: #667eea;
+    color: white;
+}
+.action-button.primary:hover {
+    background: #764ba2;
+}
+
+/* ADVANCED ANALYTICS STYLES */
+.data-analysis-section {
+    background: #f9fafb;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.analysis-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+}
+.analysis-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+.analysis-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+.analysis-bar {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+.analysis-bar-fill {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.8s ease-out;
+}
+.stats-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 4px;
+    border-left: 3px solid #667eea;
+}
+.stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+.stat-value {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+.validation-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+}
+.validation-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+.validation-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.validation-text {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
+.validation-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.validation-pass {
+    background: #d1fae5;
+    color: #065f46;
+}
+.validation-fail {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.validation-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+.insights-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+}
+.insight-item {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: #f9fafb;
+    border-radius: 4px;
+    border-left: 3px solid #667eea;
+}
+.insight-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.insight-text {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    line-height: 1.5;
+}
+.insight-warning {
+    border-left-color: #f59e0b;
+}
+.insight-error {
+    border-left-color: #ef4444;
+}
+.insight-success {
+    border-left-color: #10b981;
+}
+.anomaly-section {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    padding: 1rem;
+}
+.anomaly-item {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #f59e0b;
+}
+
+/* Footer */
+footer {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 3rem 2rem 1rem;
+    margin-top: 4rem;
+}
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 1rem;
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+}
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: white;
+    color: #1a1a1a;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    font-size: 0.95rem;
+    font-weight: 500;
+    animation: slideInUp 0.3s ease-out;
+}
+@keyframes slideInUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    .container {
+        padding: 2rem 1rem;
+    }
+    .upload-section,
+    .classification-section {
+        padding: 2rem 1.5rem;
+    }
+    .classification-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .nav-links {
+        display: none;
+    }
+    .document-preview {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+<body>
+{% include 'partials/navbar.html' %}
+<header>
+
+</header>
+
+<section class="hero">
+<div class="hero-content">
+<h1>🎯 Document Classification</h1>
+<p>Automatically identify and classify your documents using advanced AI technology</p>
+</div>
+</section>
+
+<div class="container">
+<div class="upload-section">
+<div class="section-header">
+<h2>Upload Your Document</h2>
+<p>Drag and drop your file or click to browse</p>
+</div>
+
+<div class="upload-area" id="uploadArea">
+<div class="upload-icon">📋</div>
+<div class="upload-text">Drop your file here or click to browse</div>
+<div class="upload-subtext">Our AI will automatically detect and classify your document type</div>
+<input type="file" id="fileInput" class="file-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.webp">
+</div>
+<div class="file-types">
+<span class="file-type-badge">PDF</span>
+<span class="file-type-badge">JPG</span>
+<span class="file-type-badge">PNG</span>
+<span class="file-type-badge">GIF</span>
+<span class="file-type-badge">TIFF</span>
+</div>
+</div>
+
+<div class="loading" id="loading" style="display:none;">
+<div class="spinner"></div>
+<div class="loading-text">Analyzing document...</div>
+<div class="loading-subtext">Extracting and classifying content with AI</div>
+</div>
+
+<div class="classification-section fade-in" id="resultsSection" style="display: none;">
+<div class="classification-header">
+<h2 class="classification-title">
+📊 Classification Results
+<span class="ai-badge">AI Powered</span>
+</h2>
+<div class="action-buttons">
+<button class="action-button" onclick="downloadReport()">Download Report</button>
+<button class="action-button" onclick="copyResults()">Copy Results</button>
+<button class="action-button primary" onclick="processAnother()">Classify Another</button>
+</div>
+</div>
+
+<div class="document-preview">
+<div class="preview-image">
+<img id="previewImage" src="" alt="Document preview">
+</div>
+<div class="classification-details">
+<div class="result-card">
+<div class="result-type">Document Type</div>
+<div class="result-value" id="docType">-</div>
+<div class="confidence-bar">
+<div class="confidence-fill" id="confidenceBar" style="width: 0%"></div>
+</div>
+<div class="confidence-text">Confidence: <span id="confidence">0</span>%</div>
+</div>
+
+<div class="extracted-fields" id="extractedFields">
+<h3 style="margin-bottom: 1rem; color: #1a1a1a;">Extracted Information</h3>
+</div>
+
+<!-- ADVANCED ANALYTICS SECTION -->
+<div class="data-analysis-section" id="analysisSection" style="margin-top: 2rem;">
+  <h3 style="margin-bottom: 1rem; color: #1a1a1a; display: flex; align-items: center; gap: 0.5rem;">
+    📊 Advanced Data Analytics
+    <span style="font-size: 0.7rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.25rem 0.5rem; border-radius: 10px;">AI Powered</span>
+  </h3>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <div class="analysis-label">Overall Score</div>
+      <div class="analysis-value" id="overallScore">0</div>
+      <div class="analysis-bar">
+        <div class="analysis-bar-fill" id="overallScoreBar" style="width: 0%"></div>
+      </div>
+      <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;" id="scoreGrade">-</div>
+    </div>
+    <div class="analysis-card">
+      <div class="analysis-label">Validation Status</div>
+      <div class="analysis-value" id="validationStatus">-</div>
+      <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;" id="validationDetails">-</div>
+    </div>
+    <div class="analysis-card">
+      <div class="analysis-label">Risk Level</div>
+      <div class="analysis-value" id="riskLevel">-</div>
+      <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;" id="riskScore">-</div>
+    </div>
+    <div class="analysis-card">
+      <div class="analysis-label">Data Quality</div>
+      <div class="analysis-value" id="dataQuality">0%</div>
+      <div class="analysis-bar">
+        <div class="analysis-bar-fill" id="dataQualityBar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-section" style="margin-top: 1.5rem;">
+    <h4 style="margin-bottom: 0.75rem; color: #1a1a1a;">📈 Statistical Analysis</h4>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Text Entropy:</span>
+        <span class="stat-value" id="textEntropy">-</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Confidence Distribution:</span>
+        <span class="stat-value" id="confidenceDistribution">-</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Field Completeness:</span>
+        <span class="stat-value" id="fieldCompleteness">-</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">OCR Accuracy Est.:</span>
+        <span class="stat-value" id="ocrAccuracy">-</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Pattern Matches:</span>
+        <span class="stat-value" id="patternMatches">-</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Data Integrity:</span>
+        <span class="stat-value" id="dataIntegrity">-</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="validation-section" style="margin-top: 1.5rem;">
+    <h4 style="margin-bottom: 0.75rem; color: #1a1a1a;">✓ Validation Results</h4>
+    <div id="validationResults"></div>
+  </div>
+
+  <div class="insights-section" style="margin-top: 1.5rem;">
+    <h4 style="margin-bottom: 0.75rem; color: #1a1a1a;">💡 AI Insights & Recommendations</h4>
+    <div id="insightsList"></div>
+  </div>
+
+  <div class="anomaly-section" id="anomalySection" style="margin-top: 1.5rem; display: none;">
+    <h4 style="margin-bottom: 0.75rem; color: #1a1a1a;">⚠️ Anomaly Detection</h4>
+    <div id="anomalyList"></div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+<div class="footer-content">
+<div class="footer-bottom">
+<p>©️ 2024 Document Intelligence AI. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const loadingEl = document.getElementById('loading');
+const resultsSection = document.getElementById('resultsSection');
+let currentFile = null;
+let lastClassification = null;
+
+uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    fileInput.files = files;
+    processDocument(files[0]);
+  }
+});
+fileInput.addEventListener('change', function(e) {
+  if (e.target.files.length > 0) {
+    processDocument(e.target.files[0]);
+  }
+});
+
+async function processDocument(file) {
+  currentFile = file;
+  loadingEl.style.display = 'block';
+  resultsSection.style.display = 'none';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('previewImage').src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  try {
+    const result = await Tesseract.recognize(file, 'eng', {
+      logger: m => console.log(m)
+    });
+
+    const text = result?.data?.text || '';
+    console.log('Extracted text:', text);
+
+    const classification = classifyDocument(text || '');
+    lastClassification = Object.assign({ rawText: text }, classification);
+    displayResults(lastClassification);
+  } catch (error) {
+    console.error('Error processing document:', error);
+    showNotification('Error processing document. Please try again.');
+  } finally {
+    loadingEl.style.display = 'none';
+  }
+}
+
+function classifyDocument(text) {
+  const lowerText = text.toLowerCase();
+
+  const scores = {
+    'Aadhar Card': scoreAadhar(text, lowerText),
+    'PAN Card': scorePAN(text, lowerText),
+    'Passport': scorePassport(text, lowerText),
+    'Driving License': scoreDrivingLicense(text, lowerText),
+    'Voter ID Card': scoreVoterID(text, lowerText),
+    'Invoice': scoreInvoice(text, lowerText)
+  };
+
+  let bestType = 'General Document';
+  let bestScore = 0;
+  let bestFields = {};
+
+  for (const [docType, result] of Object.entries(scores)) {
+    if (result.score > bestScore) {
+      bestScore = result.score;
+      bestType = docType;
+      bestFields = result.fields;
+    }
+  }
+
+  if (bestScore < 30) {
+    return {
+      docType: 'General Document',
+      confidence: Math.min(50, Math.round(bestScore)),
+      fields: {
+        'Type': 'Unclassified',
+        'Summary': text.trim().substring(0, 300) + (text.length > 300 ? '...' : '')
+      }
+    };
+  }
+
+  return {
+    docType: bestType,
+    confidence: Math.min(98, Math.round(bestScore)),
+    fields: bestFields
+  };
+}
+
+function extractName(text, lowerText) {
+  const excludeKeywords = [
+    'government', 'govt', 'india', 'income', 'tax', 'department',
+    'permanent', 'account', 'number', 'card', 'aadhaar', 'aadhar',
+    'passport', 'driving', 'licence', 'license', 'voter', 'election',
+    'republic', 'issued', 'valid', 'signature', 'address', 'issue',
+    'expiry', 'birth', 'male', 'female', 'sex', 'blood', 'group',
+    'holder', 'bearer', 'nationality', 'place', 'uidai', 'unique',
+    'identification', 'authority', 'transport', 'regional', 'office',
+    'commission', 'electoral', 'emblem', 'authenticated', 'photo',
+    'आयकर', 'विभाग', 'भारत', 'सरकार', 'स्थायी', 'खाता'
+  ];
+
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  const potentialNames = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineLower = line.toLowerCase();
+
+    if (excludeKeywords.some(keyword => lineLower.includes(keyword))) continue;
+    if (/[A-Z]{3,5}\d{4,}/.test(line)) continue;
+    if (/^\d{2}[-/]\d{2}[-/]\d{2,4}$/.test(line)) continue;
+    if (/^\d+$/.test(line)) continue;
+    if (line.length < 3 || line.length > 60) continue;
+
+    const initialPattern = /^[A-Z]\s+[A-Z]{2,}$/;
+    if (initialPattern.test(line)) {
+      potentialNames.push({ name: line, score: 95, type: 'initial+name' });
+      continue;
+    }
+
+    const allCapsPattern = /^[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}$/;
+    if (allCapsPattern.test(line)) {
+      const words = line.split(/\s+/);
+      const validWords = words.every(w => w.length >= 2 && w.length <= 20);
+      if (validWords) {
+        potentialNames.push({ name: line, score: 90, type: 'all-caps' });
+      }
+      continue;
+    }
+
+    const titleCasePattern = /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}$/;
+    if (titleCasePattern.test(line)) {
+      const words = line.split(/\s+/);
+      const validWords = words.every(w => w.length >= 2 && w.length <= 20);
+      if (validWords) {
+        potentialNames.push({ name: line, score: 85, type: 'title-case' });
+      }
+      continue;
+    }
+
+    const mixedPattern = /^[A-Z](?:[a-z]*\s+[A-Z][a-z]+)+$/;
+    if (mixedPattern.test(line)) {
+      potentialNames.push({ name: line, score: 80, type: 'mixed-case' });
+      continue;
+    }
+
+    const labelPattern = /(?:name|नाम)[\s:]+([A-Z][A-Za-z\s]{2,40})/i;
+    const labelMatch = line.match(labelPattern);
+    if (labelMatch) {
+      const extractedName = labelMatch[1].trim();
+      const words = extractedName.split(/\s+/);
+      if (words.length >= 2 && words.length <= 4) {
+        potentialNames.push({ name: extractedName, score: 100, type: 'labeled' });
+      }
+      continue;
+    }
+  }
+
+  potentialNames.sort((a, b) => b.score - a.score);
+
+  if (potentialNames.length > 0) {
+    const bestMatch = potentialNames[0];
+    const formattedName = bestMatch.name.split(/\s+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+    return formattedName;
+  }
+
+  return 'Not detected';
+}
+
+function scoreAadhar(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('aadhaar') || lowerText.includes('aadhar')) score += 30;
+  if (lowerText.includes('government of india')) score += 10;
+  if (lowerText.includes('uidai')) score += 15;
+  if (lowerText.includes('unique identification')) score += 15;
+
+  const aadharPatterns = [
+    /\b\d{4}\s?\d{4}\s?\d{4}\b/,
+    /\b\d{12}\b/
+  ];
+
+  let aadharMatch = null;
+  for (const pattern of aadharPatterns) {
+    aadharMatch = text.match(pattern);
+    if (aadharMatch) {
+      score += 35;
+      fields['Aadhar Number'] = aadharMatch[0].replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+      break;
+    }
+  }
+  if (!aadharMatch) fields['Aadhar Number'] = 'Not detected';
+
+  fields['Name'] = extractName(text, lowerText);
+  if (fields['Name'] !== 'Not detected') score += 10;
+
+  const dobPatterns = [
+    /(?:dob|birth|d\.o\.b\.|year of birth)[\s:]*(\d{2}[-/]\d{2}[-/]\d{4})/i,
+    /\b\d{2}[-/]\d{2}[-/]\d{4}\b/
+  ];
+
+  let dobMatch = null;
+  for (const pattern of dobPatterns) {
+    dobMatch = text.match(pattern);
+    if (dobMatch) {
+      fields['Date of Birth'] = dobMatch[1] || dobMatch[0];
+      score += 10;
+      break;
+    }
+  }
+  if (!dobMatch) fields['Date of Birth'] = 'Not detected';
+
+  return { score, fields };
+}
+
+function scorePAN(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('income tax')) score += 25;
+  if (lowerText.includes('permanent account') || lowerText.includes('pan')) score += 25;
+  if (lowerText.includes('govt. of india') || lowerText.includes('government of india')) score += 10;
+
+  const panMatch = text.match(/\b[A-Z]{5}\d{4}[A-Z]\b/);
+  if (panMatch) {
+    score += 40;
+    fields['PAN Number'] = panMatch[0];
+  } else {
+    fields['PAN Number'] = 'Not detected';
+  }
+
+  fields['Name'] = extractName(text, lowerText);
+  if (fields['Name'] !== 'Not detected') score += 10;
+
+  const dobMatch = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/);
+  if (dobMatch) {
+    fields['Date of Birth'] = dobMatch[0];
+    score += 10;
+  } else {
+    fields['Date of Birth'] = 'Not detected';
+  }
+
+  return { score, fields };
+}
+
+function scorePassport(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('passport')) score += 30;
+  if (lowerText.includes('republic of india')) score += 20;
+  if (lowerText.includes('nationality')) score += 10;
+  if (lowerText.includes('passport no') || lowerText.includes('passport number')) score += 15;
+
+  const passportMatch = text.match(/\b[A-Z]\d{7}\b/);
+  if (passportMatch) {
+    score += 35;
+    fields['Passport Number'] = passportMatch[0];
+  } else {
+    fields['Passport Number'] = 'Not detected';
+  }
+
+  fields['Name'] = extractName(text, lowerText);
+  if (fields['Name'] !== 'Not detected') score += 10;
+
+  if (lowerText.includes('india') || lowerText.includes('indian')) {
+    fields['Nationality'] = 'Indian';
+    score += 10;
+  } else {
+    fields['Nationality'] = 'Not detected';
+  }
+
+  return { score, fields };
+}
+
+function scoreDrivingLicense(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('driving')) score += 25;
+  if (lowerText.includes('licence') || lowerText.includes('license')) score += 25;
+  if (lowerText.includes('transport')) score += 10;
+  if (lowerText.includes('motor vehicles')) score += 10;
+
+  const dlPatterns = [
+    /\b[A-Z]{2}\d{2}\s?\d{11}\b/,
+    /\b[A-Z]{2}\d{13}\b/,
+    /\b[A-Z]{2}\d{14}\b/,
+    /\b[A-Z]{2}-\d{2}-\d{4}-\d{7}\b/
+  ];
+
+  let dlMatch = null;
+  for (const pattern of dlPatterns) {
+    dlMatch = text.match(pattern);
+    if (dlMatch) {
+      score += 35;
+      fields['License Number'] = dlMatch[0];
+      break;
+    }
+  }
+  if (!dlMatch) fields['License Number'] = 'Not detected';
+
+  fields['Name'] = extractName(text, lowerText);
+  if (fields['Name'] !== 'Not detected') score += 10;
+
+  const dobMatch = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/);
+  if (dobMatch) {
+    fields['Date of Birth'] = dobMatch[0];
+    score += 10;
+  } else {
+    fields['Date of Birth'] = 'Not detected';
+  }
+
+  return { score, fields };
+}
+
+function scoreVoterID(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('voter') || lowerText.includes('election')) score += 30;
+  if (lowerText.includes('elector') || lowerText.includes('electoral')) score += 20;
+  if (lowerText.includes('commission')) score += 10;
+
+  const voterMatch = text.match(/\b[A-Z]{3}\d{7}\b/);
+  if (voterMatch) {
+    score += 40;
+    fields['Voter ID'] = voterMatch[0];
+  } else {
+    fields['Voter ID'] = 'Not detected';
+  }
+
+  fields['Name'] = extractName(text, lowerText);
+  if (fields['Name'] !== 'Not detected') score += 10;
+
+  return { score, fields };
+}
+
+function scoreInvoice(text, lowerText) {
+  let score = 0;
+  const fields = {};
+
+  if (lowerText.includes('invoice')) score += 30;
+  if (lowerText.includes('bill')) score += 20;
+  if (lowerText.includes('total') || lowerText.includes('amount')) score += 15;
+  if (lowerText.includes('gst') || lowerText.includes('tax')) score += 15;
+  if (lowerText.includes('subtotal')) score += 10;
+
+  const amountPatterns = [
+    /(?:total|amount|grand total)[\s:]*[₹Rs.\s]*([0-9,]+\.?\d*)/i,
+    /₹\s*([0-9,]+\.?\d*)/,
+    /rs\.?\s*([0-9,]+\.?\d*)/i
+  ];
+
+  let amountMatch = null;
+  for (const pattern of amountPatterns) {
+    amountMatch = text.match(pattern);
+    if (amountMatch) {
+      fields['Amount'] = amountMatch[1];
+      score += 15;
+      break;
+    }
+  }
+  if (!amountMatch) fields['Amount'] = 'Not detected';
+
+  const dateMatch = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/);
+  if (dateMatch) {
+    fields['Date'] = dateMatch[0];
+    score += 10;
+  } else {
+    fields['Date'] = 'Not detected';
+  }
+
+  if (lowerText.includes('rs') || lowerText.includes('₹') || lowerText.includes('inr')) {
+    fields['Currency'] = 'INR';
+    score += 5;
+  } else if (lowerText.includes('$') || lowerText.includes('usd')) {
+    fields['Currency'] = 'USD';
+    score += 5;
+  } else {
+    fields['Currency'] = 'Not detected';
+  }
+
+  return { score, fields };
+}
+
+// ADVANCED ANALYTICS WITH FIXED VALIDATION & ANOMALY DETECTION
+function analyzeExtractedData(classification) {
+  try {
+    if (!classification) {
+      console.error('No classification data provided');
+      return;
+    }
+
+    const text = classification.rawText || '';
+    const fields = classification.fields || {};
+    const docType = classification.docType || 'Unknown';
+    const confidence = classification.confidence || 0;
+
+    console.log('Analyzing document:', docType, 'Confidence:', confidence);
+
+    const metrics = calculateAdvancedMetrics(text, fields, confidence, docType);
+    const validation = performValidation(fields, docType, text);
+    const risk = assessRisk(metrics, validation, confidence);
+    const patterns = analyzePatterns(text, fields, docType);
+
+    console.log('Validation results:', validation.length, 'checks');
+    console.log('Anomalies detected:', patterns.length);
+
+    updateAnalyticsDashboard(metrics, validation, risk, patterns, classification);
+  } catch (error) {
+    console.error('Error in analyzeExtractedData:', error);
+  }
+}
+
+function calculateAdvancedMetrics(text, fields, confidence, docType) {
+  const metrics = {};
+
+  metrics.entropy = calculateEntropy(text);
+
+  const totalFields = Object.keys(fields).length;
+  const detectedFields = Object.values(fields).filter(v => v !== 'Not detected').length;
+  metrics.completeness = totalFields > 0 ? (detectedFields / totalFields) * 100 : 0;
+
+  metrics.ocrAccuracy = estimateOCRAccuracy(text);
+  metrics.patternMatches = countPatternMatches(text, docType);
+  metrics.dataIntegrity = calculateDataIntegrity(fields, text);
+  metrics.overallScore = calculateOverallScore(confidence, metrics.completeness, metrics.ocrAccuracy, metrics.dataIntegrity);
+  metrics.confidenceDistribution = classifyConfidenceLevel(confidence);
+
+  return metrics;
+}
+
+function calculateEntropy(text) {
+  if (!text || text.length === 0) return 0;
+
+  const freq = {};
+  for (let char of text) {
+    freq[char] = (freq[char] || 0) + 1;
+  }
+
+  let entropy = 0;
+  const len = text.length;
+  for (let char in freq) {
+    const p = freq[char] / len;
+    entropy -= p * Math.log2(p);
+  }
+
+  return entropy.toFixed(2);
+}
+
+function estimateOCRAccuracy(text) {
+  if (!text || text.length < 10) return 0;
+
+  let score = 100;
+
+  const errorPatterns = [
+    /[|]{2,}/,
+    /[_]{3,}/,
+    /[.]{4,}/,
+    /[?]{2,}/,
+    /\s{4,}/,
+  ];
+
+  errorPatterns.forEach(pattern => {
+    if (pattern.test(text)) score -= 10;
+  });
+
+  const uniqueChars = new Set(text).size;
+  const totalChars = text.length;
+  const diversity = uniqueChars / totalChars;
+
+  if (diversity < 0.1) score -= 20;
+
+  return Math.max(0, Math.min(100, score));
+}
+
+function countPatternMatches(text, docType) {
+  let matches = 0;
+
+  const patterns = {
+    aadhar: [/\b\d{4}\s?\d{4}\s?\d{4}\b/g, /aadhaar|aadhar/gi],
+    pan: [/\b[A-Z]{5}\d{4}[A-Z]\b/g, /permanent account/gi],
+    passport: [/\b[A-Z]\d{7}\b/g, /passport/gi],
+    dates: [/\b\d{2}[-/]\d{2}[-/]\d{4}\b/g],
+    names: [/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g],
+  };
+
+  for (let category in patterns) {
+    patterns[category].forEach(pattern => {
+      const found = text.match(pattern);
+      if (found) matches += found.length;
+    });
+  }
+
+  return matches;
+}
+
+function calculateDataIntegrity(fields, text) {
+  let score = 100;
+
+  for (let [key, value] of Object.entries(fields)) {
+    if (value === 'Not detected') {
+      score -= 15;
+    } else if (typeof value === 'string' && value.length < 2) {
+      score -= 10;
+    }
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+function calculateOverallScore(confidence, completeness, ocrAccuracy, dataIntegrity) {
+  const weights = {
+    confidence: 0.3,
+    completeness: 0.3,
+    ocrAccuracy: 0.2,
+    dataIntegrity: 0.2
+  };
+
+  const score = (
+    confidence * weights.confidence +
+    completeness * weights.completeness +
+    ocrAccuracy * weights.ocrAccuracy +
+    dataIntegrity * weights.dataIntegrity
+  );
+
+  return Math.round(score);
+}
+
+function classifyConfidenceLevel(confidence) {
+  if (confidence >= 90) return 'Very High';
+  if (confidence >= 75) return 'High';
+  if (confidence >= 60) return 'Moderate';
+  if (confidence >= 40) return 'Low';
+  return 'Very Low';
+}
+
+// FIXED VALIDATION FUNCTION
+function performValidation(fields, docType, text) {
+  const results = [];
+
+  try {
+    console.log('Performing validation for:', docType);
+
+    // PAN Card Validation
+    if (docType === 'PAN Card') {
+      const pan = fields['PAN Number'];
+      if (pan && pan !== 'Not detected') {
+        const panRegex = /^[A-Z]{5}\d{4}[A-Z]$/;
+        const isValid = panRegex.test(pan);
+
+        results.push({
+          field: 'PAN Number Format',
+          status: isValid ? 'pass' : 'fail',
+          message: isValid ? `Valid PAN format: ${pan}` : `Invalid PAN format: ${pan}`,
+          icon: isValid ? '✓' : '✗'
+        });
+
+        if (isValid) {
+          const fourthChar = pan.charAt(3);
+          let panType = 'Unknown';
+          if (fourthChar === 'P') panType = 'Individual';
+          else if (fourthChar === 'C') panType = 'Company';
+          else if (fourthChar === 'H') panType = 'Hindu Undivided Family';
+          else if (fourthChar === 'F') panType = 'Firm';
+          else if (fourthChar === 'A') panType = 'Association of Persons';
+          else if (fourthChar === 'T') panType = 'Trust';
+
+          results.push({
+            field: 'PAN Holder Type',
+            status: 'pass',
+            message: `Holder Type: ${panType}`,
+            icon: 'ℹ️'
+          });
+        }
+      } else {
+        results.push({
+          field: 'PAN Number',
+          status: 'fail',
+          message: 'PAN Number not detected',
+          icon: '✗'
+        });
+      }
+    }
+
+    // Aadhar Card Validation
+    if (docType === 'Aadhar Card') {
+      const aadhar = fields['Aadhar Number'];
+      if (aadhar && aadhar !== 'Not detected') {
+        const digits = aadhar.replace(/\s/g, '');
+        const isValid = /^\d{12}$/.test(digits);
+
+        results.push({
+          field: 'Aadhar Number Format',
+          status: isValid ? 'pass' : 'fail',
+          message: isValid ? `Valid 12-digit Aadhar: ${aadhar}` : `Invalid Aadhar format: ${aadhar}`,
+          icon: isValid ? '✓' : '✗'
+        });
+
+        if (isValid) {
+          results.push({
+            field: 'Privacy Recommendation',
+            status: 'warning',
+            message: 'Remember to mask Aadhar number when sharing (show only last 4 digits)',
+            icon: '⚠'
+          });
+        }
+      } else {
+        results.push({
+          field: 'Aadhar Number',
+          status: 'fail',
+          message: 'Aadhar Number not detected',
+          icon: '✗'
+        });
+      }
+    }
+
+    // Passport Validation
+    if (docType === 'Passport') {
+      const passport = fields['Passport Number'];
+      if (passport && passport !== 'Not detected') {
+        const isValid = /^[A-Z]\d{7}$/.test(passport);
+
+        results.push({
+          field: 'Passport Number Format',
+          status: isValid ? 'pass' : 'fail',
+          message: isValid ? `Valid Indian passport format: ${passport}` : `Invalid passport format: ${passport}`,
+          icon: isValid ? '✓' : '✗'
+        });
+      } else {
+        results.push({
+          field: 'Passport Number',
+          status: 'fail',
+          message: 'Passport Number not detected',
+          icon: '✗'
+        });
+      }
+    }
+
+    // Driving License Validation
+    if (docType === 'Driving License') {
+      const dl = fields['License Number'];
+      if (dl && dl !== 'Not detected') {
+        const isValid = /^[A-Z]{2}[-\s]?\d{2}[-\s]?\d{4,11}[-\s]?\d{0,7}$/.test(dl);
+
+        results.push({
+          field: 'License Number Format',
+          status: isValid ? 'pass' : 'warning',
+          message: isValid ? `Valid DL format: ${dl}` : `DL format may vary by state: ${dl}`,
+          icon: isValid ? '✓' : '⚠'
+        });
+      } else {
+        results.push({
+          field: 'License Number',
+          status: 'fail',
+          message: 'License Number not detected',
+          icon: '✗'
+        });
+      }
+    }
+
+    // Voter ID Validation
+    if (docType === 'Voter ID Card') {
+      const voterId = fields['Voter ID'];
+      if (voterId && voterId !== 'Not detected') {
+        const isValid = /^[A-Z]{3}\d{7}$/.test(voterId);
+
+        results.push({
+          field: 'Voter ID Format',
+          status: isValid ? 'pass' : 'fail',
+          message: isValid ? `Valid Voter ID format: ${voterId}` : `Invalid Voter ID format: ${voterId}`,
+          icon: isValid ? '✓' : '✗'
+        });
+      } else {
+        results.push({
+          field: 'Voter ID',
+          status: 'fail',
+          message: 'Voter ID not detected',
+          icon: '✗'
+        });
+      }
+    }
+
+    // Date Validation (for all document types)
+    for (let [key, value] of Object.entries(fields)) {
+      if ((key.toLowerCase().includes('date') || key.toLowerCase().includes('birth') || key.toLowerCase().includes('dob'))
+          && value && value !== 'Not detected') {
+        const dateMatch = value.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
+        if (dateMatch) {
+          const [_, day, month, year] = dateMatch.map(Number);
+          const currentYear = new Date().getFullYear();
+
+          const isValidFormat = day >= 1 && day <= 31 && month >= 1 && month <= 12;
+          const isValidYear = year >= 1900 && year <= currentYear;
+          const isValid = isValidFormat && isValidYear;
+
+          results.push({
+            field: key,
+            status: isValid ? 'pass' : 'fail',
+            message: isValid ? `Valid date: ${value}` : `Invalid date: ${value}`,
+            icon: isValid ? '✓' : '✗'
+          });
+        }
+      }
+    }
+
+    // Name Validation
+    const name = fields['Name'];
+    if (name && name !== 'Not detected') {
+      const words = name.split(/\s+/);
+      const isValid = words.length >= 2 && words.every(w => w.length >= 2 && /^[A-Za-z]+$/.test(w));
+
+      results.push({
+        field: 'Name Format',
+        status: isValid ? 'pass' : 'warning',
+        message: isValid ? `Valid name format: ${name}` : `Name may be incomplete: ${name}`,
+        icon: isValid ? '✓' : '⚠'
+      });
+    }
+
+    console.log('Validation completed:', results.length, 'checks');
+
+  } catch (error) {
+    console.error('Error in performValidation:', error);
+  }
+
+  return results;
+}
+
+function assessRisk(metrics, validation, confidence) {
+  let riskScore = 0;
+
+  if (confidence < 70) riskScore += 30;
+  else if (confidence < 85) riskScore += 15;
+
+  if (metrics.completeness < 70) riskScore += 25;
+  else if (metrics.completeness < 85) riskScore += 10;
+
+  if (metrics.ocrAccuracy < 70) riskScore += 20;
+  else if (metrics.ocrAccuracy < 85) riskScore += 10;
+
+  const failedValidations = validation.filter(v => v.status === 'fail').length;
+  riskScore += failedValidations * 15;
+
+  let riskLevel, riskColor;
+  if (riskScore >= 60) {
+    riskLevel = 'High';
+    riskColor = '#ef4444';
+  } else if (riskScore >= 35) {
+    riskLevel = 'Medium';
+    riskColor = '#f59e0b';
+  } else {
+    riskLevel = 'Low';
+    riskColor = '#10b981';
+  }
+
+  return { score: riskScore, level: riskLevel, color: riskColor };
+}
+
+// FIXED ANOMALY DETECTION
+function analyzePatterns(text, fields, docType) {
+  const patterns = [];
+
+  try {
+    console.log('Analyzing patterns for anomalies...');
+
+    // Check for multiple document numbers
+    const panMatches = (text.match(/\b[A-Z]{5}\d{4}[A-Z]\b/g) || []);
+    const aadharMatches = (text.match(/\b\d{4}\s?\d{4}\s?\d{4}\b/g) || []);
+    const passportMatches = (text.match(/\b[A-Z]\d{7}\b/g) || []);
+
+    console.log('Pattern matches:', {
+      pan: panMatches.length,
+      aadhar: aadharMatches.length,
+      passport: passportMatches.length
+    });
+
+    if (panMatches.length > 1) {
+      patterns.push({
+        type: 'Duplicate Document Numbers',
+        message: `Multiple PAN numbers detected (${panMatches.length}): ${panMatches.join(', ')}. This may indicate document tampering or multiple documents in one image.`,
+        severity: 'high'
+      });
+    }
+
+    if (aadharMatches.length > 1) {
+      patterns.push({
+        type: 'Duplicate Document Numbers',
+        message: `Multiple Aadhar numbers detected (${aadharMatches.length}). This may indicate document tampering or multiple documents in one image.`,
+        severity: 'high'
+      });
+    }
+
+    if (passportMatches.length > 1) {
+      patterns.push({
+        type: 'Duplicate Document Numbers',
+        message: `Multiple Passport numbers detected (${passportMatches.length}). This may indicate multiple documents in one image.`,
+        severity: 'high'
+      });
+    }
+
+    // Check for sample/specimen text
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes('sample') || lowerText.includes('specimen')) {
+      patterns.push({
+        type: 'Sample Document',
+        message: 'Document contains "SAMPLE" or "SPECIMEN" text. This appears to be a template or sample document, not a real document.',
+        severity: 'high'
+      });
+    }
+
+    // Check for template text
+    if (lowerText.includes('your name') || lowerText.includes('name here') || lowerText.includes('placeholder')) {
+      patterns.push({
+        type: 'Template Text',
+        message: 'Document contains placeholder text like "Your Name" or "Name Here". This may be a template.',
+        severity: 'high'
+      });
+    }
+
+    // Check for watermarks
+    if (lowerText.includes('watermark') || lowerText.includes('not valid') || lowerText.includes('for reference only')) {
+      patterns.push({
+        type: 'Watermark Detected',
+        message: 'Document contains watermark or "not valid" text. This may be a copy or reference document.',
+        severity: 'medium'
+      });
+    }
+
+    // Check for suspicious date patterns
+    const dates = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/g) || [];
+    if (dates.length > 3) {
+      patterns.push({
+        type: 'Multiple Dates',
+        message: `Document contains ${dates.length} different dates. Verify which dates are correct.`,
+        severity: 'medium'
+      });
+    }
+
+    // Check for low quality indicators
+    const suspiciousChars = (text.match(/[|@#$%^&*~`]{3,}/g) || []).length;
+    if (suspiciousChars > 2) {
+      patterns.push({
+        type: 'Poor OCR Quality',
+        message: 'High number of suspicious characters detected. The image quality may be very poor or the document may be damaged.',
+        severity: 'medium'
+      });
+    }
+
+    // Check for document type mismatch
+    if (docType === 'PAN Card' && (aadharMatches.length > 0 || passportMatches.length > 0)) {
+      patterns.push({
+        type: 'Document Type Mismatch',
+        message: 'Multiple document types detected in the same image. This may indicate multiple documents or incorrect classification.',
+        severity: 'high'
+      });
+    }
+
+    console.log('Anomalies found:', patterns.length);
+
+  } catch (error) {
+    console.error('Error in analyzePatterns:', error);
+  }
+
+  return patterns;
+}
+
+function updateAnalyticsDashboard(metrics, validation, risk, patterns, classification) {
+  try {
+    document.getElementById('overallScore').textContent = metrics.overallScore;
+    document.getElementById('overallScoreBar').style.width = metrics.overallScore + '%';
+    const grade = metrics.overallScore >= 90 ? 'A+' : metrics.overallScore >= 80 ? 'A' :
+                  metrics.overallScore >= 70 ? 'B' : metrics.overallScore >= 60 ? 'C' : 'D';
+    document.getElementById('scoreGrade').textContent = `Grade: ${grade}`;
+
+    const passedValidations = validation.filter(v => v.status === 'pass').length;
+    const totalValidations = validation.length;
+    const validationPercent = totalValidations > 0 ? Math.round((passedValidations / totalValidations) * 100) : 0;
+    document.getElementById('validationStatus').textContent = `${passedValidations}/${totalValidations}`;
+    document.getElementById('validationDetails').textContent = `${validationPercent}% passed`;
+
+    document.getElementById('riskLevel').textContent = risk.level;
+    document.getElementById('riskLevel').style.color = risk.color;
+    document.getElementById('riskScore').textContent = `Score: ${risk.score}/100`;
+
+    document.getElementById('dataQuality').textContent = Math.round(metrics.dataIntegrity) + '%';
+    document.getElementById('dataQualityBar').style.width = metrics.dataIntegrity + '%';
+
+    document.getElementById('textEntropy').textContent = metrics.entropy;
+    document.getElementById('confidenceDistribution').textContent = metrics.confidenceDistribution;
+    document.getElementById('fieldCompleteness').textContent = Math.round(metrics.completeness) + '%';
+    document.getElementById('ocrAccuracy').textContent = Math.round(metrics.ocrAccuracy) + '%';
+    document.getElementById('patternMatches').textContent = metrics.patternMatches;
+    document.getElementById('dataIntegrity').textContent = Math.round(metrics.dataIntegrity) + '%';
+
+    displayValidationResults(validation);
+
+    const insights = generateAdvancedInsights(metrics, validation, risk, classification);
+    displayInsights(insights);
+
+    displayAnomalies(patterns);
+
+  } catch (error) {
+    console.error('Error updating analytics dashboard:', error);
+  }
+}
+
+function displayValidationResults(validation) {
+  const container = document.getElementById('validationResults');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  if (validation.length === 0) {
+    container.innerHTML = '<div style="color: #666; font-size: 0.9rem; padding: 0.5rem;">No validation checks available for this document type.</div>';
+    return;
+  }
+
+  validation.forEach(v => {
+    const div = document.createElement('div');
+    div.className = 'validation-item';
+    div.innerHTML = `
+      <div class="validation-icon">${v.icon}</div>
+      <div class="validation-text">${escapeHtml(v.field)}: ${escapeHtml(v.message)}</div>
+      <span class="validation-badge validation-${v.status}">${v.status.toUpperCase()}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function generateAdvancedInsights(metrics, validation, risk, classification) {
+  const insights = [];
+  const confidence = classification.confidence || 0;
+
+  if (metrics.overallScore >= 85) {
+    insights.push({
+      type: 'success',
+      icon: '🎉',
+      text: `Excellent overall score (${metrics.overallScore}/100)! The document is high quality and all data appears reliable.`
+    });
+  } else if (metrics.overallScore >= 70) {
+    insights.push({
+      type: 'info',
+      icon: '👍',
+      text: `Good overall score (${metrics.overallScore}/100). The document is acceptable but could benefit from a clearer image.`
+    });
+  } else {
+    insights.push({
+      type: 'warning',
+      icon: '⚠️',
+      text: `Low overall score (${metrics.overallScore}/100). Consider re-scanning the document with better lighting and resolution.`
+    });
+  }
+
+  if (risk.level === 'High') {
+    insights.push({
+      type: 'error',
+      icon: '🚨',
+      text: `High risk detected (${risk.score}/100). Manual verification strongly recommended before using this data.`
+    });
+  } else if (risk.level === 'Medium') {
+    insights.push({
+      type: 'warning',
+      icon: '⚠️',
+      text: `Medium risk level (${risk.score}/100). Review the extracted data carefully before proceeding.`
+    });
+  } else {
+    insights.push({
+      type: 'success',
+      icon: '✅',
+      text: `Low risk level (${risk.score}/100). The extracted data appears reliable and safe to use.`
+    });
+  }
+
+  if (metrics.ocrAccuracy < 70) {
+    insights.push({
+      type: 'error',
+      icon: '📉',
+      text: `Poor OCR accuracy (${Math.round(metrics.ocrAccuracy)}%). The image quality is insufficient. Recommendation: Use a high-resolution scanner or better camera.`
+    });
+  }
+
+  const failedValidations = validation.filter(v => v.status === 'fail');
+  if (failedValidations.length > 0) {
+    insights.push({
+      type: 'error',
+      icon: '❌',
+      text: `${failedValidations.length} validation check(s) failed. The document data may contain errors or be incomplete.`
+    });
+  } else if (validation.length > 0) {
+    insights.push({
+      type: 'success',
+      icon: '✓',
+      text: 'All validation checks passed! The extracted data matches expected formats and patterns.'
+    });
+  }
+
+  return insights;
+}
+
+function displayInsights(insights) {
+  const container = document.getElementById('insightsList');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  insights.forEach(insight => {
+    const div = document.createElement('div');
+    div.className = `insight-item insight-${insight.type}`;
+    div.innerHTML = `
+      <div class="insight-icon">${insight.icon}</div>
+      <div class="insight-text">${escapeHtml(insight.text)}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function displayAnomalies(patterns) {
+  const section = document.getElementById('anomalySection');
+  const container = document.getElementById('anomalyList');
+
+  if (!section || !container) return;
+
+  if (patterns.length === 0) {
+    section.style.display = 'none';
+    console.log('No anomalies to display');
+    return;
+  }
+
+  console.log('Displaying', patterns.length, 'anomalies');
+  section.style.display = 'block';
+  container.innerHTML = '';
+
+  patterns.forEach(pattern => {
+    const div = document.createElement('div');
+    div.className = 'anomaly-item';
+    const icon = pattern.severity === 'high' ? '🚨' : '⚠️';
+    div.innerHTML = `
+      <div class="insight-icon">${icon}</div>
+      <div class="insight-text"><strong>${escapeHtml(pattern.type).toUpperCase()}:</strong> ${escapeHtml(pattern.message)}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function displayResults(classification) {
+  if (!classification) return;
+
+  document.getElementById('docType').textContent = classification.docType || '-';
+  const conf = classification.confidence || 0;
+  document.getElementById('confidence').textContent = conf;
+  document.getElementById('confidenceBar').style.width = conf + '%';
+
+  const container = document.getElementById('extractedFields');
+  container.querySelectorAll('.field-item').forEach(n => n.remove());
+
+  const fields = classification.fields || {};
+  for (const key of Object.keys(fields)) {
+    const value = fields[key];
+    const div = document.createElement('div');
+    div.className = 'field-item';
+    div.innerHTML = `<div class="field-label">${escapeHtml(key)}</div><div class="field-value">${escapeHtml(String(value))}</div>`;
+    container.appendChild(div);
+  }
+
+  loadingEl.style.display = 'none';
+  resultsSection.style.display = 'block';
+
+  // Perform analytics
+  analyzeExtractedData(classification);
+}
+
+function showNotification(message, timeout = 4000) {
+  const existing = document.querySelector('.notification');
+  if (existing) existing.remove();
+
+  const n = document.createElement('div');
+  n.className = 'notification';
+  n.textContent = message;
+  document.body.appendChild(n);
+  setTimeout(() => {
+    n.style.opacity = '0';
+    setTimeout(() => n.remove(), 300);
+  }, timeout);
+}
+
+function downloadReport() {
+  if (!lastClassification) {
+    showNotification('No results to download.');
+    return;
+  }
+  const data = {
+    classification: lastClassification.docType,
+    confidence: lastClassification.confidence,
+    fields: lastClassification.fields,
+    rawText: (lastClassification.rawText || '').trim()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${data.classification || 'document'}-report.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function copyResults() {
+  if (!lastClassification) {
+    showNotification('No results to copy.');
+    return;
+  }
+  const lines = [];
+  lines.push(`Document Type: ${lastClassification.docType}`);
+  lines.push(`Confidence: ${lastClassification.confidence}%`);
+  for (const k of Object.keys(lastClassification.fields || {})) {
+    lines.push(`${k}: ${lastClassification.fields[k]}`);
+  }
+  lines.push('\nExtracted Text (first 500 chars):');
+  lines.push((lastClassification.rawText || '').substring(0, 500));
+
+  try {
+    await navigator.clipboard.writeText(lines.join('\n'));
+    showNotification('Results copied to clipboard!');
+  } catch (err) {
+    console.error(err);
+    showNotification('Unable to copy. Your browser may block clipboard access.');
+  }
+}
+
+function processAnother() {
+  fileInput.value = '';
+  currentFile = null;
+  lastClassification = null;
+
+  document.getElementById('previewImage').src = '';
+  resultsSection.style.display = 'none';
+  loadingEl.style.display = 'none';
+
+  document.getElementById('docType').textContent = '-';
+  document.getElementById('confidence').textContent = '0';
+  document.getElementById('confidenceBar').style.width = '0%';
+  document.querySelectorAll('.field-item').forEach(n => n.remove());
+
+  // Reset analytics
+  document.getElementById('overallScore').textContent = '0';
+  document.getElementById('overallScoreBar').style.width = '0%';
+  document.getElementById('scoreGrade').textContent = '-';
+  document.getElementById('validationStatus').textContent = '-';
+  document.getElementById('validationDetails').textContent = '-';
+  document.getElementById('riskLevel').textContent = '-';
+  document.getElementById('riskScore').textContent = '-';
+  document.getElementById('dataQuality').textContent = '0%';
+  document.getElementById('dataQualityBar').style.width = '0%';
+  document.getElementById('textEntropy').textContent = '-';
+  document.getElementById('confidenceDistribution').textContent = '-';
+  document.getElementById('fieldCompleteness').textContent = '-';
+  document.getElementById('ocrAccuracy').textContent = '-';
+  document.getElementById('patternMatches').textContent = '-';
+  document.getElementById('dataIntegrity').textContent = '-';
+  document.getElementById('validationResults').innerHTML = '';
+  document.getElementById('insightsList').innerHTML = '';
+  document.getElementById('anomalySection').style.display = 'none';
+  document.getElementById('anomalyList').innerHTML = '';
+
+  showNotification('Ready for next document', 1500);
+}
+
+function escapeHtml(unsafe) {
+  if (typeof unsafe !== 'string') unsafe = String(unsafe);
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+</script>
+</body>
+</html>

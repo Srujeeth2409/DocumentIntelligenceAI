@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register - Document Intelligence AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #0066cc;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .auth-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .auth-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-login {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-button:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .social-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .google { background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); }
+        .microsoft { background: linear-gradient(135deg, #00a4ef 0%, #f25022 100%); }
+
+        .bottom-switch {
+            text-align: center;
+        }
+
+        .bottom-switch p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .switch-button {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .switch-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .switch-button:active {
+            transform: translateY(0);
+        }
+
+        .terms-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .terms-text a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message,
+        .success-message {
+            padding: 0.875rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                margin-top: 100px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .auth-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-tabs">
+
+            </div>
+            <h1 id="authTitle">Welcome Back</h1>
+            <p id="authSubtitle">Log in to your account to continue</p>
+        </div>
+
+        <div class="auth-body">
+            <!-- Error/Success Messages -->
+            <div class="error-message" id="errorMessage" style="display: none;">
+                Invalid username or password. Please try again.
+            </div>
+            <div class="success-message" id="successMessage" style="display: none;">
+                Account created successfully! Please sign in.
+            </div>
+
+            <!-- Login Form -->
+            <div class="form-panel active" id="loginPanel">
+                <form id="loginForm" method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="email">Username or Email</label>
+                        <input
+                            type=email
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login_password">Password</label>
+                        <input
+                            type="password"
+                            id="login_password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember" id="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="/forgot-password/" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="auth-button">Sign In</button>
+                </form>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="bottom-switch">
+                    <p>Don't have an account?</p>
+                    <button type="button" class="switch-button" data-switch="register">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div class="form-panel" id="registerPanel">
+                <form id="registerForm" method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Your full name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="name@example.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create a password"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Confirm Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Confirm your password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-button">Sign Up</button>
+                </form>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="bottom-switch">
+                    <p>Already have an account?</p>
+                    <button type="button" class="switch-button" data-switch="login">Sign In</button>
+                </div>
+
+                <div class="terms-text">
+                    By creating an account, you agree to our<br>
+                    <a href="/terms/">Terms of Service</a> and <a href="/privacy/">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.auth-tab');
+        const switchButtons = document.querySelectorAll('.switch-button');
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+        const authTitle = document.getElementById('authTitle');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        function switchToTab(tabName) {
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            const targetTab = document.querySelector(`.auth-tab[data-tab="${tabName}"]`);
+            if (targetTab) targetTab.classList.add('active');
+
+            // Hide messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Switch panels
+            if (tabName === 'login') {
+                loginPanel.classList.add('active');
+                registerPanel.classList.remove('active');
+                authTitle.textContent = 'Welcome Back';
+                authSubtitle.textContent = 'Log in to your account to continue';
+            } else {
+                registerPanel.classList.add('active');
+                loginPanel.classList.remove('active');
+                authTitle.textContent = 'Create an Account';
+                authSubtitle.textContent = 'Get started with Document Intelligence AI';
+            }
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                switchToTab(this.dataset.tab);
+            });
+        });
+
+        switchButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                switchToTab(this.dataset.switch);
+            });
+        });
+
+        // Login form validation
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', function(e) {
+            const username = document.getElementById('login_username').value.trim();
+            const password = document.getElementById('login_password').value;
+
+            if (!username || !password) {
+                e.preventDefault();
+                errorMessage.textContent = 'Please fill in all fields.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            errorMessage.style.display = 'none';
+        });
+
+        // Register form validation
+        const registerForm = document.getElementById('registerForm');
+        registerForm.addEventListener('submit', function(e) {
+            const fullName = document.getElementById('full_name').value.trim();
+            const email = document.getElementById('register_email').value.trim();
+            const username = document.getElementById('register_username').value.trim();
+            const password = document.getElementById('register_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (!fullName || !email || !username || !password || !confirmPassword) {
+                e.preventDefault();
+                errorMessage.textContent = 'Please fill in all fields.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                errorMessage.textContent = 'Passwords do not match.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            errorMessage.style.display = 'none';
+        });
+
+        // Show error message if there's an error in URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error')) {
+            errorMessage.style.display = 'block';
+        }
+        if (urlParams.get('success')) {
+            successMessage.style.display = 'block';
+            // Switch to login tab
+            switchToTab('login');
+        }
+    </script>
+</body>
+</html>
